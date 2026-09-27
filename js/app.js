@@ -122,9 +122,12 @@ window.Diary = window.Diary || {};
   function init() {
     app = document.getElementById('app');
 
-    // Шрифт заголовков лежит в fonts/. Если он нашёлся — ослабляем трекинг под него.
+    // Шрифт заголовков лежит в fonts/: по умолчанию Soledago, ?font=nauryz — Nauryz Red Keds.
+    // Если шрифт нашёлся — ослабляем трекинг под него.
+    var displayFont = /[?&]font=nauryz\b/.test(window.location.search) || window.DIARY_FONT === 'nauryz' ? 'nauryz' : 'soledago';
+    document.documentElement.setAttribute('data-display', displayFont);
     if (document.fonts && document.fonts.load) {
-      document.fonts.load('1em Soledago').then(function (faces) {
+      document.fonts.load(displayFont === 'nauryz' ? '1em NauryzRedKeds' : '1em Soledago').then(function (faces) {
         if (faces.length) document.documentElement.classList.add('has-display-font');
       }).catch(function () {});
     }
