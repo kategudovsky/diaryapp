@@ -18,8 +18,8 @@ window.Diary = window.Diary || {};
 
   // Цвета папок-подборок идут по кругу.
   var PACK_COLORS = [
-    ['#FF5B37', '#FFF6E8'], ['#C9F04B', '#2B1810'], ['#1E5A3A', '#FFF6E8'],
-    ['#FF9ACB', '#2B1810'], ['#86B6F2', '#2B1810'], ['#FFD23F', '#2B1810']
+    ['#EC1864', '#FFFFFF'], ['#CFD72A', '#1C1B3A'], ['#6077D4', '#FFFFFF'],
+    ['#FFD1E4', '#1C1B3A'], ['#DAF5F9', '#1C1B3A']
   ];
 
   function liveEntries(entryIds) {
@@ -34,7 +34,7 @@ window.Diary = window.Diary || {};
 
   function pageVars() {
     var t = Diary.PAGE_THEME.collections;
-    return '--c:' + t.c + ';--fi:' + t.fi + ';--m:#FF5B37';
+    return '--c:' + t.c + ';--fi:' + t.fi + ';--m:#FFD1E4';
   }
 
   function headHtml(opts) {
@@ -47,7 +47,7 @@ window.Diary = window.Diary || {};
       '<h1>' + esc(opts.title) + '</h1>' +
       '<p class="coll-sub">' + esc(opts.sub) + '</p>' +
       '</div>' +
-      '<div class="coll-mascot">' + Diary.covers.mascot('series', '#FF5B37', { wave: true }) +
+      '<div class="coll-mascot">' + Diary.covers.mascot('series', '#FFD1E4', { wave: true }) +
       '<svg class="doodle" viewBox="0 0 60 60" aria-hidden="true">' + Diary.covers.sparkle(30, 30, 26, 'currentColor') + '</svg></div>' +
       '</div>' +
       '<div class="coll-tools">' + opts.tools + '</div>' +
@@ -77,7 +77,7 @@ window.Diary = window.Diary || {};
   function renderOverview(app) {
     var collections = collRepo.getAll();
     var body = collections.length === 0
-      ? '<div class="empty">' + Diary.covers.mascot('series', '#FF5B37') + '<p>Пока нет подборок</p>' +
+      ? '<div class="empty">' + Diary.covers.mascot('series', '#EC1864') + '<p>Пока нет подборок</p>' +
         '<span class="empty-hint">Создайте первую, чтобы собрать тематическую коллекцию из всего, что у вас есть.</span></div>'
       : '<div class="packs">' + collections.map(packHtml).join('') + '</div>';
 
@@ -130,7 +130,7 @@ window.Diary = window.Diary || {};
           '<button type="button" class="collection-remove" data-remove="' + e.id + '" title="Убрать из подборки" aria-label="Убрать «' + esc(e.title) + '» из подборки">×</button>' +
           '</div>';
       }).join('') + '</div>'
-      : '<div class="empty">' + Diary.covers.mascot('series', '#FF5B37') + '<p>Подборка пуста</p><span class="empty-hint">Добавьте записи из вашего хранилища.</span></div>';
+      : '<div class="empty">' + Diary.covers.mascot('series', '#EC1864') + '<p>Подборка пуста</p><span class="empty-hint">Добавьте записи из вашего хранилища.</span></div>';
 
     app.innerHTML = '' +
       '<section class="coll" style="' + pageVars() + '">' +

@@ -97,7 +97,7 @@ window.Diary = window.Diary || {};
   }
 
   function emptyStateHtml(hasAny, category) {
-    var mascot = Diary.covers.mascot(category || 'movie', category ? Diary.THEME[category].m : '#FFD23F');
+    var mascot = Diary.covers.mascot(category || 'movie', category ? Diary.THEME[category].m : '#CFD72A');
     if (!hasAny) {
       return '<div class="empty">' + mascot + '<p>Пока пусто</p><span class="empty-hint">Добавьте первую запись — дневник начнётся с неё.</span>' +
         '<button class="btn" data-action="add"' + (category ? ' data-category="' + category + '"' : '') + ' type="button">+ Положить первое</button></div>';

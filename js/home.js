@@ -39,7 +39,7 @@ window.Diary = window.Diary || {};
       : '<p class="now-empty">Здесь появится всё, что вы добавите.</p>';
 
     return '' +
-      '<article class="folder folder--title" style="--c:#FFF1DD;--fi:#2B1810;z-index:10">' +
+      '<article class="folder folder--title" style="--c:#FFFFFF;--fi:#1C1B3A;z-index:10">' +
       '<div class="folder-tab" aria-hidden="true"><small>FILE_00 //</small>архив</div>' +
       '<div class="folder-body title-sheet">' +
       '<div class="mono">FILE_00 // идея фикс · ' + YEAR + '</div>' +
@@ -58,10 +58,10 @@ window.Diary = window.Diary || {};
       '</div>' +
       '<section class="now"><h3>Недавно добавлено</h3>' + recentHtml + '</section>' +
       '<div class="stats">' +
-      '<span class="sticker" style="--s:#C9F04B">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
-      '<span class="sticker" style="--s:#FF9ACB">' + doneThisYear(active) + ' за ' + YEAR + '</span>' +
-      '<span class="sticker" style="--s:#FFD23F">' + active.filter(function (e) { return e.status === 'planned'; }).length + ' в планах</span>' +
-      '<a class="sticker sticker--link" href="#/collections" style="--s:#C7B4F7">' + collections + ' ' + utils.plural(collections, ['подборка', 'подборки', 'подборок']) + ' →</a>' +
+      '<span class="sticker" style="--s:#CFD72A">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
+      '<span class="sticker" style="--s:#FFD1E4">' + doneThisYear(active) + ' за ' + YEAR + '</span>' +
+      '<span class="sticker" style="--s:#CFD72A">' + active.filter(function (e) { return e.status === 'planned'; }).length + ' в планах</span>' +
+      '<a class="sticker sticker--link" href="#/collections" style="--s:#DAF5F9">' + collections + ' ' + utils.plural(collections, ['подборка', 'подборки', 'подборок']) + ' →</a>' +
       '</div>' +
       '</div>' +
       '</article>';

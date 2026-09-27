@@ -55,19 +55,19 @@ window.Diary = window.Diary || {};
   // Цвет папки, цвет текста на ней, цвет талисмана, цвет клетки фона страницы
   // и код для язычков. Логике это не нужно — только интерфейсу.
   Diary.THEME = {
-    movie:  { code: 'FILM', c: '#FF5B37', fi: '#FFF6E8', m: '#FFD23F', grid: 'rgba(255,246,232,.16)' },
-    game:   { code: 'GAME', c: '#C9F04B', fi: '#2B1810', m: '#8B5CF6', grid: 'rgba(43,24,16,.08)' },
-    book:   { code: 'BOOK', c: '#1E5A3A', fi: '#FFF6E8', m: '#FF9ACB', grid: 'rgba(255,246,232,.1)' },
-    series: { code: 'SER',  c: '#FF9ACB', fi: '#2B1810', m: '#FF5B37', grid: 'rgba(43,24,16,.08)' }
+    movie:  { code: 'FILM', c: '#EC1864', fi: '#FFFFFF', m: '#CFD72A', grid: 'rgba(255, 255, 255,.16)' },
+    game:   { code: 'GAME', c: '#CFD72A', fi: '#1C1B3A', m: '#6077D4', grid: 'rgba(28, 27, 58,.08)' },
+    book:   { code: 'BOOK', c: '#6077D4', fi: '#FFFFFF', m: '#FFD1E4', grid: 'rgba(255, 255, 255,.1)' },
+    series: { code: 'SER',  c: '#FFD1E4', fi: '#1C1B3A', m: '#EC1864', grid: 'rgba(28, 27, 58,.08)' }
   };
 
   // Страницы, которые не относятся к одной категории.
   Diary.PAGE_THEME = {
-    collections: { c: '#C7B4F7', fi: '#2B1810', grid: 'rgba(43,24,16,.08)' },
-    trash:       { c: '#FFB59A', fi: '#2B1810', grid: 'rgba(43,24,16,.08)' }
+    collections: { c: '#6077D4', fi: '#FFFFFF', grid: 'rgba(255, 255, 255,.14)' },
+    trash:       { c: '#FFD1E4', fi: '#1C1B3A', grid: 'rgba(28, 27, 58,.08)' }
   };
 
-  Diary.STATUS_COLOR = { planned: '#FFD23F', done: '#C7B4F7' };
+  Diary.STATUS_COLOR = { planned: '#CFD72A', done: '#DAF5F9' };
 
   // Формы для «12 фильмов», «3 игры» и т. п.
   Diary.CATEGORY_FORMS = {

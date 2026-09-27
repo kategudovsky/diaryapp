@@ -1,7 +1,7 @@
 // Half-star rating: 5 slots, each a base outline star with a width-clipped
 // filled star on top (0%, 50% or 100% depending on the value). Used both for
 // static display in cards and as an interactive picker in the entry modal.
-// Звёзды нарисованы в стиле «Фикса»: жёлтая заливка и тёмный контур.
+// Звёзды нарисованы в стиле «Фикса»: лаймовая заливка и тёмный контур.
 window.Diary = window.Diary || {};
 
 (function (Diary) {
@@ -9,7 +9,7 @@ window.Diary = window.Diary || {};
 
   function starSvg(filled, size) {
     return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" aria-hidden="true">' +
-      '<path d="' + PATH + '" fill="' + (filled ? '#FFD23F' : 'none') + '" stroke="#2B1810" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+      '<path d="' + PATH + '" fill="' + (filled ? '#CFD72A' : 'none') + '" stroke="#1C1B3A" stroke-width="1.8" stroke-linejoin="round"/></svg>';
   }
 
   function slotFillPercent(rating, slotIndex) {

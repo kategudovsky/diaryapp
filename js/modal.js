@@ -111,7 +111,7 @@ window.Diary = window.Diary || {};
     modalEl.querySelector('#editBtn').focus({ preventScroll: true });
   }
 
-  var TAG_COLORS = ['#C9F04B', '#FF9ACB', '#C7B4F7', '#FFD23F', '#86B6F2', '#FFB59A'];
+  var TAG_COLORS = ['#CFD72A', '#FFD1E4', '#DAF5F9'];
 
   // ==================== EDIT MODE ====================
 
@@ -176,9 +176,9 @@ window.Diary = window.Diary || {};
       '<div class="field">' +
       '<span class="label">Дата</span>' +
       '<div class="chips chips--small" id="dateTypePicker" role="group" aria-label="Тип даты">' +
-      '<button type="button" class="chip" data-datetype="exact" style="--sc:#86B6F2">Точная</button>' +
-      '<button type="button" class="chip" data-datetype="approx" style="--sc:#86B6F2">Примерная</button>' +
-      '<button type="button" class="chip" data-datetype="unknown" style="--sc:#86B6F2">Без даты</button>' +
+      '<button type="button" class="chip" data-datetype="exact" style="--sc:#DAF5F9">Точная</button>' +
+      '<button type="button" class="chip" data-datetype="approx" style="--sc:#DAF5F9">Примерная</button>' +
+      '<button type="button" class="chip" data-datetype="unknown" style="--sc:#DAF5F9">Без даты</button>' +
       '</div>' +
       '<div class="date-inputs" id="dateInputsExact">' +
       '<input type="date" id="f_date_exact" aria-label="Дата">' +
@@ -226,7 +226,7 @@ window.Diary = window.Diary || {};
     var picker = modalEl.querySelector('#genrePicker');
     picker.innerHTML = list.map(function (g) {
       var on = selectedGenres.indexOf(g) !== -1;
-      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:#C9F04B" data-genre="' + esc(g) + '" aria-pressed="' + on + '">' + esc(g) + '</button>';
+      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:#CFD72A" data-genre="' + esc(g) + '" aria-pressed="' + on + '">' + esc(g) + '</button>';
     }).join('');
   }
 

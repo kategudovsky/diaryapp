@@ -37,7 +37,7 @@ window.Diary = window.Diary || {};
     return '' +
       '<div class="card card--trash" data-id="' + entry.id + '">' +
       '<span class="cover">' + Diary.render.coverInner(entry) +
-      '<span class="status-pill" style="--sc:#FFF6E8">' + (daysLeft > 0 ? 'ещё ' + daysLeft + ' ' + utils.plural(daysLeft, ['день', 'дня', 'дней']) : 'удаляется…') + '</span>' +
+      '<span class="status-pill" style="--sc:#FFFFFF">' + (daysLeft > 0 ? 'ещё ' + daysLeft + ' ' + utils.plural(daysLeft, ['день', 'дня', 'дней']) : 'удаляется…') + '</span>' +
       '</span>' +
       '<span class="card-meta">' +
       '<span class="card-code"><span class="dot" style="--c:' + t.c + '"></span>' + esc(Diary.CATEGORY_LABEL[entry.category]) + '</span>' +
@@ -57,7 +57,7 @@ window.Diary = window.Diary || {};
     var days = Diary.TRASH_RETENTION_DAYS;
 
     var body = trashed.length === 0
-      ? '<div class="empty">' + Diary.covers.mascot('book', '#1E5A3A') + '<p>Корзина пуста</p><span class="empty-hint">Удалённые записи будут появляться здесь.</span></div>'
+      ? '<div class="empty">' + Diary.covers.mascot('book', '#EC1864') + '<p>Корзина пуста</p><span class="empty-hint">Удалённые записи будут появляться здесь.</span></div>'
       : '<div class="grid">' + trashed.map(trashCardHtml).join('') + '</div>';
 
     app.innerHTML = '' +
@@ -70,7 +70,7 @@ window.Diary = window.Diary || {};
       '<h1>Корзина</h1>' +
       '<p class="coll-sub">Удалённые записи хранятся здесь ' + days + ' ' + utils.plural(days, ['день', 'дня', 'дней']) + ', затем удаляются навсегда.</p>' +
       '</div>' +
-      '<div class="coll-mascot">' + Diary.covers.mascot('book', '#1E5A3A', { wave: true }) + '</div>' +
+      '<div class="coll-mascot">' + Diary.covers.mascot('book', '#EC1864', { wave: true }) + '</div>' +
       '</div>' +
       '<div class="coll-tools">' +
       '<button type="button" class="btn btn--ghost" data-empty-trash' + (trashed.length ? '' : ' disabled') + '>Очистить корзину</button>' +

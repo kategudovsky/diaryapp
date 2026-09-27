@@ -3,23 +3,23 @@
 window.Diary = window.Diary || {};
 
 Diary.covers = (() => {
-  const INK = '#2B1810';
+  const INK = '#1C1B3A';
 
+  // Палитра: голубой #DAF5F9, синий #6077D4, лайм #CFD72A, малиновый #EC1864, розовый #FFD1E4.
+  const C = { cyan: '#DAF5F9', blue: '#6077D4', lime: '#CFD72A', berry: '#EC1864', pink: '#FFD1E4', white: '#FFFFFF' };
   const PALETTES = [
-    { bg: '#FF8FC6', main: '#FFD23F', acc: '#FFE98A', text: '#FFFFFF' },
-    { bg: '#FFF1DE', main: '#FF5B37', acc: '#FFC2DA', text: '#FF5B37' },
-    { bg: '#B7D98B', main: '#FFF8EC', acc: '#86B6F2', text: '#4F86D9' },
-    { bg: '#FF9ACB', main: '#F2362B', acc: '#3F9B4A', text: '#FFFFFF' },
-    { bg: '#FFF1DE', main: '#F0472C', acc: '#FFC9D9', text: '#F0472C' },
-    { bg: '#C7B4F7', main: '#5B2E9E', acc: '#FFD23F', text: INK },
-    { bg: '#FFE58F', main: '#FF5B37', acc: '#FF9ACB', text: INK },
-    { bg: '#B7E4C0', main: '#0F4D45', acc: '#FFF6E8', text: '#0F4D45' },
-    { bg: '#4E9BD9', main: '#A9D2F5', acc: '#FFD23F', text: '#FFFFFF' },
-    { bg: '#1E5A3A', main: '#F28AC5', acc: '#FFF6E8', text: '#FFF6E8' },
-    { bg: '#FF6A3D', main: '#FFC2A8', acc: '#FFD23F', text: '#FFF6E8' },
-    { bg: '#F5EE9A', main: '#8FA8E8', acc: '#E8392B', text: '#5A2A1A' },
-    { bg: '#C9F04B', main: '#1FAF5A', acc: '#FF8FC6', text: '#14532D' },
-    { bg: '#8B5CF6', main: '#FF9ACB', acc: '#C9F04B', text: '#FFFFFF' },
+    { bg: C.pink,  main: C.berry, acc: C.blue,  text: C.berry },
+    { bg: C.blue,  main: C.lime,  acc: C.pink,  text: C.white },
+    { bg: C.cyan,  main: C.blue,  acc: C.berry, text: C.blue },
+    { bg: C.berry, main: C.pink,  acc: C.lime,  text: C.white },
+    { bg: C.lime,  main: C.blue,  acc: C.white, text: INK },
+    { bg: C.white, main: C.berry, acc: C.cyan,  text: C.berry },
+    { bg: C.blue,  main: C.cyan,  acc: C.berry, text: C.white },
+    { bg: C.pink,  main: C.blue,  acc: C.lime,  text: INK },
+    { bg: C.cyan,  main: C.lime,  acc: C.berry, text: INK },
+    { bg: C.berry, main: C.lime,  acc: C.cyan,  text: C.white },
+    { bg: C.lime,  main: C.berry, acc: C.pink,  text: INK },
+    { bg: C.white, main: C.blue,  acc: C.pink,  text: C.blue },
   ];
 
   function hash(str) {
@@ -73,7 +73,7 @@ Diary.covers = (() => {
     ring(cx, cy, r, c) {
       return `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r * 0.86)}" fill="none" stroke="${c}" stroke-width="${f(r * 0.28)}"/>`;
     },
-    cherry(cx, cy, r, c, leaf = '#3F9B4A') {
+    cherry(cx, cy, r, c, leaf = '#CFD72A') {
       const a = [cx - r * 0.5, cy + r * 0.25], b = [cx + r * 0.55, cy + r * 0.5];
       const top = [cx + r * 0.25, cy - r * 1.0];
       return `<path d="M${f(a[0])} ${f(a[1] - r * 0.4)}Q${f(cx - r * 0.2)} ${f(cy - r * 0.6)} ${f(top[0])} ${f(top[1])}M${f(b[0])} ${f(b[1] - r * 0.4)}Q${f(cx + r * 0.6)} ${f(cy - r * 0.3)} ${f(top[0])} ${f(top[1])}" stroke="${INK}" stroke-width="${f(r * 0.07)}" fill="none" stroke-linecap="round"/>
@@ -115,7 +115,7 @@ Diary.covers = (() => {
     // вишенки
     (p) => shape.cherry(215, 110, 90, p.main, p.acc) + face(170, 145, 11) + shape.cherry(60, 300, 34, p.main, p.acc),
     // сердца
-    (p) => shape.heart(150, 60, 120, p.acc) + shape.heart(150, 70, 60, p.main) + shape.heart(20, 360, 70, p.main),
+    (p) => shape.heart(150, 60, 120, p.acc) + shape.heart(150, 70, 60, p.main) + shape.heart(285, 300, 55, p.main),
     // арка и горы
     (p) => shape.arch(10, 30, 280, 420, p.acc) + shape.mountain(p.main) + shape.sparkle(250, 70, 14, p.bg),
     // волна-змейка
