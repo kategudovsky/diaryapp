@@ -97,7 +97,7 @@ window.Diary = window.Diary || {};
   }
 
   function emptyStateHtml(hasAny, category) {
-    var fig = Diary.covers.figure(category || 'movie', category ? Diary.THEME[category].m : '#CFD72A');
+    var fig = Diary.covers.figure(category || 'movie', category ? Diary.THEME[category].m : '#FFC43D');
     if (!hasAny) {
       return '<div class="empty">' + fig + '<p>Пока пусто</p><span class="empty-hint">Добавьте первую запись — дневник начнётся с неё.</span>' +
         '<button class="btn" data-action="add"' + (category ? ' data-category="' + category + '"' : '') + ' type="button">+ Положить первое</button></div>';

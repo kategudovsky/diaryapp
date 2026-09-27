@@ -1,3 +1,14 @@
+/* ============ Шрифт заголовков ============ */
+@font-face {
+  font-family: 'Soledago';
+  src: url('../fonts/Soledago.woff2') format('woff2'),
+       url('../fonts/Soledago.woff') format('woff'),
+       url('../fonts/Soledago.otf') format('opentype'),
+       url('../fonts/Soledago.ttf') format('truetype');
+  font-weight: 100 900; /* одно начертание на все веса — без искусственного жирного */
+  font-display: swap;
+}
+
 /* ============ Токены ============ */
 :root {
   --cream: #FFFFFF;
@@ -6,19 +17,21 @@
   --ink: #1C1B3A;
   --ink-2: #5D6182;
   --tomato: #EC1864; /* акцент: малиновый */
-  --pink: #FFD1E4;
-  --lime: #CFD72A;
+  --lilac: #B79CF2;
+  --sun: #FFC43D;
   --forest: #6077D4;
-  --yellow: #CFD72A;
+  --yellow: #FFC43D;
   --blue: #6077D4;
   --lav: #DAF5F9;
   --violet: #6077D4;
-  --peach: #FFD1E4;
+  --peach: #B79CF2;
 
   --r: 14px;          /* радиус вогнутых «плечиков» язычка */
   --tab-w: 50px;      /* ширина боковых язычков папок */
   --gutter: 28px;
 
+  /* Заголовки — Soledago (файл в fonts/). Пока файла нет, браузер берёт Onest. */
+  --display: 'Soledago', 'Onest', system-ui, sans-serif;
   --font: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --hand: 'Caveat', 'Comic Sans MS', cursive;
   --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
@@ -67,6 +80,17 @@ button, input, select, textarea { font: inherit; color: inherit; }
 .mono { font: 500 11px/1.3 var(--mono); letter-spacing: .06em; text-transform: uppercase; opacity: .75; }
 [hidden] { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
+
+/* Заголовки набраны Soledago. Трекинг подогнан под Onest; когда Soledago
+   загрузился, app.js ставит .has-display-font и трекинг ослабляется. */
+.logo-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .detail-info h2, .add-head h2 {
+  font-family: var(--display);
+  font-synthesis: none;
+}
+.has-display-font :is(.logo-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .detail-info h2, .add-head h2) {
+  letter-spacing: -.01em;
+  font-weight: 400;
+}
 
 /* ============ Кнопки и общие элементы ============ */
 .btn {
@@ -707,7 +731,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 .picker-row:hover { background: #DAF5F9; }
 .picker-row input { position: absolute; opacity: 0; pointer-events: none; }
 .picker-check { flex: none; width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 7px; background: var(--cream); display: grid; place-items: center; }
-.picker-row input:checked + .picker-check { background: var(--lime); }
+.picker-row input:checked + .picker-check { background: var(--sun); }
 .picker-row input:checked + .picker-check::after { content: ""; width: 10px; height: 5px; border: solid var(--ink); border-width: 0 0 2.5px 2.5px; transform: translateY(-1px) rotate(-45deg); }
 .picker-row input:focus-visible + .picker-check { outline: 3px solid var(--violet); outline-offset: 2px; }
 .picker-row .now-thumb { width: 30px; height: 42px; }
@@ -754,7 +778,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
   position: relative;
   margin: 0;
   font-size: 17px; font-weight: 500; line-height: 1.4; font-style: italic;
-  background: var(--pink-soft, #FFD1E4);
+  background: #ECE3FF;
   border-radius: 18px;
   padding: 14px 18px 14px 46px;
 }

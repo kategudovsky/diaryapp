@@ -18,8 +18,8 @@ window.Diary = window.Diary || {};
 
   // Цвета папок-подборок идут по кругу.
   var PACK_COLORS = [
-    ['#EC1864', '#FFFFFF'], ['#CFD72A', '#1C1B3A'], ['#6077D4', '#FFFFFF'],
-    ['#FFD1E4', '#1C1B3A'], ['#DAF5F9', '#1C1B3A']
+    ['#EC1864', '#FFFFFF'], ['#FFC43D', '#1C1B3A'], ['#6077D4', '#FFFFFF'],
+    ['#B79CF2', '#1C1B3A'], ['#DAF5F9', '#1C1B3A']
   ];
 
   function liveEntries(entryIds) {
@@ -34,7 +34,7 @@ window.Diary = window.Diary || {};
 
   function pageVars() {
     var t = Diary.PAGE_THEME.collections;
-    return '--c:' + t.c + ';--fi:' + t.fi + ';--m:#FFD1E4';
+    return '--c:' + t.c + ';--fi:' + t.fi + ';--m:#FFC43D';
   }
 
   function headHtml(opts) {
@@ -47,7 +47,7 @@ window.Diary = window.Diary || {};
       '<h1>' + esc(opts.title) + '</h1>' +
       '<p class="coll-sub">' + esc(opts.sub) + '</p>' +
       '</div>' +
-      '<div class="coll-figure coll-figure--still">' + Diary.covers.figure('collections', '#FFD1E4') +
+      '<div class="coll-figure coll-figure--still">' + Diary.covers.figure('collections', '#FFC43D') +
       '<svg class="doodle" viewBox="0 0 60 60" aria-hidden="true">' + Diary.covers.sparkle(30, 30, 26, 'currentColor') + '</svg></div>' +
       '</div>' +
       '<div class="coll-tools">' + opts.tools + '</div>' +

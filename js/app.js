@@ -122,6 +122,13 @@ window.Diary = window.Diary || {};
   function init() {
     app = document.getElementById('app');
 
+    // Шрифт заголовков лежит в fonts/. Если он нашёлся — ослабляем трекинг под него.
+    if (document.fonts && document.fonts.load) {
+      document.fonts.load('1em Soledago').then(function (faces) {
+        if (faces.length) document.documentElement.classList.add('has-display-font');
+      }).catch(function () {});
+    }
+
     Diary.home.setup(app);
     Diary.category.setup(app);
     Diary.collections.setup(app);

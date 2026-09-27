@@ -46,7 +46,7 @@ window.Diary = window.Diary || {};
       '<div class="mono">FILE_00 // идея фикс · ' + YEAR + '</div>' +
       '<div class="title-row">' +
       '<h1>фикс</h1>' +
-      '<span class="title-deco" aria-hidden="true">' + Diary.covers.figure('series', '#CFD72A') + Diary.covers.figure('movie', '#FFD1E4') + '</span>' +
+      '<span class="title-deco" aria-hidden="true">' + Diary.covers.figure('series', '#FFC43D') + Diary.covers.figure('movie', '#B79CF2') + '</span>' +
       '</div>' +
       '<p class="decode">' + Diary.CATEGORIES.map(function (cat) {
         var label = Diary.CATEGORY_LABEL_PLURAL[cat];
@@ -57,8 +57,8 @@ window.Diary = window.Diary || {};
       Diary.CATEGORIES.map(function (cat) { return statTileHtml(cat, active); }).join('') +
       '</section>' +
       '<div class="stats">' +
-      '<span class="sticker" style="--s:#CFD72A">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
-      '<span class="sticker" style="--s:#FFD1E4">' + doneThisYear(active) + ' завершено за ' + YEAR + '</span>' +
+      '<span class="sticker" style="--s:#FFC43D">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
+      '<span class="sticker" style="--s:#B79CF2">' + doneThisYear(active) + ' завершено за ' + YEAR + '</span>' +
       '<span class="sticker" style="--s:#DAF5F9">' + planned + ' в планах</span>' +
       '<a class="sticker sticker--link" href="#/collections" style="--s:#6077D4;color:#FFFFFF">' + collections + ' ' + utils.plural(collections, ['подборка', 'подборки', 'подборок']) + ' →</a>' +
       '</div>' +

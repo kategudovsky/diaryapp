@@ -111,7 +111,7 @@ window.Diary = window.Diary || {};
     modalEl.querySelector('#editBtn').focus({ preventScroll: true });
   }
 
-  var TAG_COLORS = ['#CFD72A', '#FFD1E4', '#DAF5F9'];
+  var TAG_COLORS = ['#FFC43D', '#B79CF2', '#DAF5F9'];
 
   // ==================== EDIT MODE ====================
 
@@ -226,7 +226,7 @@ window.Diary = window.Diary || {};
     var picker = modalEl.querySelector('#genrePicker');
     picker.innerHTML = list.map(function (g) {
       var on = selectedGenres.indexOf(g) !== -1;
-      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:#CFD72A" data-genre="' + esc(g) + '" aria-pressed="' + on + '">' + esc(g) + '</button>';
+      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:#FFC43D" data-genre="' + esc(g) + '" aria-pressed="' + on + '">' + esc(g) + '</button>';
     }).join('');
   }
 

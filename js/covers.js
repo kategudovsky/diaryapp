@@ -5,21 +5,21 @@ window.Diary = window.Diary || {};
 Diary.covers = (() => {
   const INK = '#1C1B3A';
 
-  // Палитра: голубой #DAF5F9, синий #6077D4, лайм #CFD72A, малиновый #EC1864, розовый #FFD1E4.
-  const C = { cyan: '#DAF5F9', blue: '#6077D4', lime: '#CFD72A', berry: '#EC1864', pink: '#FFD1E4', white: '#FFFFFF' };
+  // Палитра: голубой #DAF5F9, синий #6077D4, жёлтый #FFC43D, малиновый #EC1864, сиреневый #B79CF2.
+  const C = { cyan: '#DAF5F9', blue: '#6077D4', sun: '#FFC43D', berry: '#EC1864', lilac: '#B79CF2', white: '#FFFFFF' };
   const PALETTES = [
-    { bg: C.pink,  main: C.berry, acc: C.blue,  text: C.berry },
-    { bg: C.blue,  main: C.lime,  acc: C.pink,  text: C.white },
+    { bg: C.lilac,  main: C.berry, acc: C.blue,  text: C.berry },
+    { bg: C.blue,  main: C.sun,  acc: C.lilac,  text: C.white },
     { bg: C.cyan,  main: C.blue,  acc: C.berry, text: C.blue },
-    { bg: C.berry, main: C.pink,  acc: C.lime,  text: C.white },
-    { bg: C.lime,  main: C.blue,  acc: C.white, text: INK },
+    { bg: C.berry, main: C.lilac,  acc: C.sun,  text: C.white },
+    { bg: C.sun,  main: C.blue,  acc: C.white, text: INK },
     { bg: C.white, main: C.berry, acc: C.cyan,  text: C.berry },
     { bg: C.blue,  main: C.cyan,  acc: C.berry, text: C.white },
-    { bg: C.pink,  main: C.blue,  acc: C.lime,  text: INK },
-    { bg: C.cyan,  main: C.lime,  acc: C.berry, text: INK },
-    { bg: C.berry, main: C.lime,  acc: C.cyan,  text: C.white },
-    { bg: C.lime,  main: C.berry, acc: C.pink,  text: INK },
-    { bg: C.white, main: C.blue,  acc: C.pink,  text: C.blue },
+    { bg: C.lilac,  main: C.blue,  acc: C.sun,  text: INK },
+    { bg: C.cyan,  main: C.sun,  acc: C.berry, text: INK },
+    { bg: C.berry, main: C.sun,  acc: C.cyan,  text: C.white },
+    { bg: C.sun,  main: C.berry, acc: C.lilac,  text: INK },
+    { bg: C.white, main: C.blue,  acc: C.lilac,  text: C.blue },
   ];
 
   function hash(str) {
@@ -73,7 +73,7 @@ Diary.covers = (() => {
     ring(cx, cy, r, c) {
       return `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r * 0.86)}" fill="none" stroke="${c}" stroke-width="${f(r * 0.28)}"/>`;
     },
-    cherry(cx, cy, r, c, leaf = '#CFD72A') {
+    cherry(cx, cy, r, c, leaf = '#FFC43D') {
       const a = [cx - r * 0.5, cy + r * 0.25], b = [cx + r * 0.55, cy + r * 0.5];
       const top = [cx + r * 0.25, cy - r * 1.0];
       return `<path d="M${f(a[0])} ${f(a[1] - r * 0.4)}Q${f(cx - r * 0.2)} ${f(cy - r * 0.6)} ${f(top[0])} ${f(top[1])}M${f(b[0])} ${f(b[1] - r * 0.4)}Q${f(cx + r * 0.6)} ${f(cy - r * 0.3)} ${f(top[0])} ${f(top[1])}" stroke="${INK}" stroke-width="${f(r * 0.07)}" fill="none" stroke-linecap="round"/>

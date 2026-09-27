@@ -9,7 +9,7 @@ window.Diary = window.Diary || {};
 
   function starSvg(filled, size) {
     return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" aria-hidden="true">' +
-      '<path d="' + PATH + '" fill="' + (filled ? '#CFD72A' : 'none') + '" stroke="#1C1B3A" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+      '<path d="' + PATH + '" fill="' + (filled ? '#FFC43D' : 'none') + '" stroke="#1C1B3A" stroke-width="1.8" stroke-linejoin="round"/></svg>';
   }
 
   function slotFillPercent(rating, slotIndex) {
