@@ -54,7 +54,7 @@ window.Diary = window.Diary || {};
       '<h1>' + esc(Diary.CATEGORY_LABEL_PLURAL[cat]) + '</h1>' +
       '<p class="coll-sub" data-sub></p>' +
       '</div>' +
-      '<div class="coll-mascot">' + Diary.covers.mascot(cat, t.m, { wave: true }) +
+      '<div class="coll-figure">' + Diary.covers.figure(cat, t.m) +
       '<svg class="doodle" viewBox="0 0 60 60" aria-hidden="true">' + Diary.covers.sparkle(30, 30, 26, 'currentColor') + '</svg></div>' +
       '</div>' +
       '<div class="coll-tools">' +

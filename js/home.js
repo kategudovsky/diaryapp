@@ -9,7 +9,6 @@ window.Diary = window.Diary || {};
   var R = Diary.render;
 
   var THUMB_LIMIT = 9;
-  var RECENT_LIMIT = 4;
   var TAB_TOPS = [36, 170, 304, 438];
   var YEAR = new Date().getFullYear();
 
@@ -24,44 +23,44 @@ window.Diary = window.Diary || {};
     }).length;
   }
 
-  function titleSheetHtml(active) {
-    var recent = active.slice().sort(function (a, b) { return b.createdAt - a.createdAt; }).slice(0, RECENT_LIMIT);
-    var collections = Diary.collectionsRepo.getAll().length;
+  // Крупные цифры по каждой папке: сколько просмотрено, пройдено, прочитано.
+  function statTileHtml(cat, active) {
+    var t = Diary.THEME[cat];
+    var done = active.filter(function (e) { return e.category === cat && e.status === 'done'; }).length;
+    return '<a class="stat-tile" href="#/' + cat + '" style="' + themeVars(cat) + '">' +
+      '<span class="stat-top">' + Diary.DONE_WORD[cat] + '</span>' +
+      '<span class="stat-num">' + done + '</span>' +
+      '<span class="stat-bottom">' + utils.plural(done, Diary.CATEGORY_FORMS[cat]) + '</span>' +
+      '<span class="stat-fig">' + Diary.covers.figure(cat, t.m) + '</span>' +
+      '</a>';
+  }
 
-    var recentHtml = recent.length
-      ? '<ul>' + recent.map(function (e) {
-        return '<li><button class="now-item" data-open="' + e.id + '" type="button">' +
-          R.tinyThumbHtml(e) +
-          '<span class="now-text"><b>' + esc(e.title) + '</b>' +
-          '<small>' + esc(Diary.CATEGORY_LABEL[e.category].toLowerCase()) + ' · ' + esc(R.statusLabel(e).toLowerCase()) + ' · ' + esc(R.dateBadge(e)) + '</small></span>' +
-          '</button></li>';
-      }).join('') + '</ul>'
-      : '<p class="now-empty">Здесь появится всё, что вы добавите.</p>';
+  function titleSheetHtml(active) {
+    var collections = Diary.collectionsRepo.getAll().length;
+    var planned = active.filter(function (e) { return e.status === 'planned'; }).length;
 
     return '' +
       '<article class="folder folder--title" style="--c:#FFFFFF;--fi:#1C1B3A;z-index:10">' +
       '<div class="folder-tab" aria-hidden="true"><small>FILE_00 //</small>архив</div>' +
       '<div class="folder-body title-sheet">' +
       '<div class="mono">FILE_00 // идея фикс · ' + YEAR + '</div>' +
+      '<div class="title-row">' +
       '<h1>фикс</h1>' +
+      '<span class="title-deco" aria-hidden="true">' + Diary.covers.figure('series', '#CFD72A') + Diary.covers.figure('movie', '#FFD1E4') + '</span>' +
+      '</div>' +
       '<p class="decode">' + Diary.CATEGORIES.map(function (cat) {
         var label = Diary.CATEGORY_LABEL_PLURAL[cat];
         return '<span style="' + themeVars(cat) + '"><b>' + label.charAt(0) + '</b>' + esc(label.slice(1).toLowerCase()) + '</span>';
       }).join('') + '</p>' +
       '<p class="lead">Всё, что посмотрено, прочитано и пройдено — разложено по папкам.</p>' +
-      '<div class="mascot-row">' +
-      Diary.CATEGORIES.map(function (cat, i) {
-        return '<a href="#/' + cat + '" class="mascot-link" style="--d:' + (i * 0.15) + 's" aria-label="' + esc(Diary.CATEGORY_LABEL_PLURAL[cat]) + '">' +
-          Diary.covers.mascot(cat, Diary.THEME[cat].c, { wave: i === 2 }) + '</a>';
-      }).join('') +
-      '<span class="hand-note" aria-hidden="true">выбирай папку →</span>' +
-      '</div>' +
-      '<section class="now"><h3>Недавно добавлено</h3>' + recentHtml + '</section>' +
+      '<section class="big-stats" aria-label="Статистика">' +
+      Diary.CATEGORIES.map(function (cat) { return statTileHtml(cat, active); }).join('') +
+      '</section>' +
       '<div class="stats">' +
       '<span class="sticker" style="--s:#CFD72A">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
-      '<span class="sticker" style="--s:#FFD1E4">' + doneThisYear(active) + ' за ' + YEAR + '</span>' +
-      '<span class="sticker" style="--s:#CFD72A">' + active.filter(function (e) { return e.status === 'planned'; }).length + ' в планах</span>' +
-      '<a class="sticker sticker--link" href="#/collections" style="--s:#DAF5F9">' + collections + ' ' + utils.plural(collections, ['подборка', 'подборки', 'подборок']) + ' →</a>' +
+      '<span class="sticker" style="--s:#FFD1E4">' + doneThisYear(active) + ' завершено за ' + YEAR + '</span>' +
+      '<span class="sticker" style="--s:#DAF5F9">' + planned + ' в планах</span>' +
+      '<a class="sticker sticker--link" href="#/collections" style="--s:#6077D4;color:#FFFFFF">' + collections + ' ' + utils.plural(collections, ['подборка', 'подборки', 'подборок']) + ' →</a>' +
       '</div>' +
       '</div>' +
       '</article>';
@@ -90,7 +89,7 @@ window.Diary = window.Diary || {};
       '<div class="folder-peek">' + peek + '</div>' +
       '<div class="folder-foot"><span>' + Diary.DONE_WORD[cat] + ': ' + done + '</span><span class="open">открыть →</span></div>' +
       '</div>' +
-      '<span class="folder-mascot">' + Diary.covers.mascot(cat, t.m) + '</span>' +
+      '<span class="folder-figure">' + Diary.covers.figure(cat, t.m) + '</span>' +
       '</div>' +
       '</article>';
   }

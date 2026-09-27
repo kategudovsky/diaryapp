@@ -89,31 +89,45 @@ Diary.covers = (() => {
       const r = w / 2;
       return `<path d="M${f(x)} ${f(y + h)}V${f(y + r)}A${f(r)} ${f(r)} 0 0 1 ${f(x + w)} ${f(y + r)}V${f(y + h)}Z" fill="${c}"/>`;
     },
+    // колючая звезда с острыми лучами
+    spiky(cx, cy, r, c, n = 12, inner = 0.5, rot = 0) {
+      const pts = [];
+      for (let i = 0; i < n * 2; i++) {
+        const a = -Math.PI / 2 + rot + (i * Math.PI) / n;
+        const rr = i % 2 ? r * inner : r;
+        pts.push(`${f(cx + Math.cos(a) * rr)},${f(cy + Math.sin(a) * rr)}`);
+      }
+      return `<polygon points="${pts.join(' ')}" fill="${c}"/>`;
+    },
+    // звёздочка-астериск из четырёх перекладин
+    asterisk(cx, cy, r, c, rot = 0) {
+      const w = r * 0.42;
+      return [0, 45, 90, 135].map((a) =>
+        `<rect x="${f(cx - w / 2)}" y="${f(cy - r)}" width="${f(w)}" height="${f(r * 2)}" rx="${f(w * 0.12)}" fill="${c}" transform="rotate(${f(a + rot)} ${f(cx)} ${f(cy)})"/>`).join('');
+    },
+    // стопка «камешков»
+    pebbles(cx, cy, r, c) {
+      return `<ellipse cx="${f(cx)}" cy="${f(cy - r * 0.62)}" rx="${f(r * 0.78)}" ry="${f(r * 0.3)}" fill="${c}"/>
+        <ellipse cx="${f(cx + r * 0.06)}" cy="${f(cy)}" rx="${f(r * 0.98)}" ry="${f(r * 0.28)}" fill="${c}"/>
+        <ellipse cx="${f(cx - r * 0.04)}" cy="${f(cy + r * 0.64)}" rx="${f(r * 0.88)}" ry="${f(r * 0.34)}" fill="${c}"/>`;
+    },
     mountain(c) {
       return `<polygon points="-20,430 40,250 90,285 140,190 200,260 250,220 330,330 330,430" fill="${c}" stroke="${c}" stroke-width="24" stroke-linejoin="round"/>`;
     },
   };
 
-  function face(cx, cy, s, ink = INK) {
-    return `<g>
-      <ellipse cx="${f(cx - s)}" cy="${f(cy)}" rx="${f(s * 0.26)}" ry="${f(s * 0.38)}" fill="${ink}"/>
-      <ellipse cx="${f(cx + s)}" cy="${f(cy)}" rx="${f(s * 0.26)}" ry="${f(s * 0.38)}" fill="${ink}"/>
-      <path d="M${f(cx - s * 0.5)} ${f(cy + s * 0.55)}Q${f(cx)} ${f(cy + s * 1.15)} ${f(cx + s * 0.5)} ${f(cy + s * 0.55)}" stroke="${ink}" stroke-width="${f(s * 0.2)}" fill="none" stroke-linecap="round"/>
-    </g>`;
-  }
-
   // --- композиции ---
   const templates = [
     // большая звезда-взрыв в углу + маленькие звёздочки
-    (p, R) => shape.burst(230, 70, 120, p.main, 7, R() * 0.5) + face(215, 80, 18) +
+    (p, R) => shape.burst(230, 70, 120, p.main, 7, R() * 0.5) +
       shape.burst(50, 250, 24, p.main, 6) + shape.sparkle(260, 230, 12, p.acc) + shape.sparkle(40, 60, 9, p.acc),
     // два цветка, срезанные краями
     (p, R) => shape.flower(250, 40, 140, p.main, 5, null, R()) + shape.flower(10, 300, 70, p.acc, 5, null, R()),
     // облако-цветок с мордочкой по центру
-    (p, R) => shape.flower(150, 120, 120, p.main, 6, null, R()) + face(150, 125, 16) +
+    (p, R) => shape.flower(150, 120, 120, p.main, 6, null, R()) +
       shape.flower(40, 300, 26, p.acc, 5, p.main) + shape.flower(270, 260, 20, p.acc, 5, p.main),
     // вишенки
-    (p) => shape.cherry(215, 110, 90, p.main, p.acc) + face(170, 145, 11) + shape.cherry(60, 300, 34, p.main, p.acc),
+    (p) => shape.cherry(215, 110, 90, p.main, p.acc) + shape.cherry(60, 300, 34, p.main, p.acc),
     // сердца
     (p) => shape.heart(150, 60, 120, p.acc) + shape.heart(150, 70, 60, p.main) + shape.heart(285, 300, 55, p.main),
     // арка и горы
@@ -137,10 +151,18 @@ Diary.covers = (() => {
     },
     // круги-апельсины
     (p) => [[70, 60], [150, 30], [230, 80], [110, 140], [210, 170]].map(([x, y], i) =>
-      `<circle cx="${x}" cy="${y}" r="${48 - i * 3}" fill="${i % 2 ? p.acc : p.main}"/>`).join('') + face(110, 140, 12),
+      `<circle cx="${x}" cy="${y}" r="${48 - i * 3}" fill="${i % 2 ? p.acc : p.main}"/>`).join(''),
     // кольцо и цветок
     (p, R) => shape.ring(220, 90, 110, p.main) + shape.flower(70, 70, 60, p.acc, 5, p.main, R()),
+    // большой астериск
+    (p, R) => shape.asterisk(200, 120, 120, p.main, R() * 20) + shape.sparkle(50, 250, 16, p.acc),
+    // колючая звезда и искры
+    (p, R) => shape.spiky(110, 120, 130, p.main, 14, 0.62, R()) + shape.sparkle(250, 280, 22, p.acc) + shape.sparkle(270, 40, 12, p.acc),
+    // камешки
+    (p) => shape.pebbles(170, 140, 150, p.main) + shape.sparkle(60, 50, 14, p.acc),
   ];
+
+  const MOUNTAIN_TEMPLATE = 5;
 
   function wrap(title, max = 13) {
     const words = String(title).split(/\s+/);
@@ -164,37 +186,36 @@ Diary.covers = (() => {
     const h = hash(item.category + item.title);
     const R = rng(h);
     const p = PALETTES[h % PALETTES.length];
-    const tpl = templates[Math.floor(R() * templates.length)];
-    let body = tpl(p, R);
+    const tplIndex = Math.floor(R() * templates.length);
+    let body = templates[tplIndex](p, R);
+    // У «арки с горами» название ложится на гору — берём цвет фона, чтобы не слилось.
+    const textColor = tplIndex === MOUNTAIN_TEMPLATE ? p.bg : p.text;
     if (text) {
       const lines = wrap(item.title);
       const long = lines.some((l) => l.length > 10) || lines.length > 2;
       const fs = long ? 27 : 33;
       const lh = fs * 1.02;
       const y0 = 392 - (lines.length - 1) * lh;
-      body += `<text x="22" y="${f(y0)}" fill="${p.text}" font-family="Onest, sans-serif" font-weight="800" font-size="${fs}" letter-spacing="-1.2">${lines.map((l, i) => `<tspan x="22" dy="${i ? f(lh) : 0}">${esc(l)}</tspan>`).join('')}</text>`;
+      body += `<text x="22" y="${f(y0)}" fill="${textColor}" font-family="Onest, sans-serif" font-weight="800" font-size="${fs}" letter-spacing="-1.2">${lines.map((l, i) => `<tspan x="22" dy="${i ? f(lh) : 0}">${esc(l)}</tspan>`).join('')}</text>`;
     }
     const svg = `<svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(item.title)}"><rect width="300" height="420" fill="${p.bg}"/>${body}</svg>`;
     cache.set(key, svg);
     return svg;
   }
 
-  // Талисманы папок: персонажи с ручками и ножками
-  const MASCOTS = {
-    movie: (c) => shape.burst(60, 52, 40, c, 7) + face(60, 52, 9),
-    series: (c) => shape.flower(60, 50, 42, c, 5) + face(60, 52, 8),
-    book: (c) => shape.flower(60, 50, 40, c, 4) + face(60, 52, 8),
-    game: (c) => `<path d="M24 60C18 28 44 12 64 16 92 20 104 44 96 70 90 92 60 96 42 88 30 82 26 72 24 60Z" fill="${c}"/>` + face(62, 50, 8),
+  // Фигуры-символы папок и разделов вместо персонажей.
+  const FIGURES = {
+    movie: (c) => shape.spiky(60, 60, 56, c, 12, 0.5),
+    game: (c) => shape.asterisk(60, 60, 54, c),
+    book: (c) => shape.flower(60, 60, 58, c, 6),
+    series: (c) => shape.sparkle(60, 60, 58, c),
+    collections: (c) => shape.pebbles(60, 60, 54, c),
+    trash: (c) => shape.ring(60, 60, 56, c),
   };
 
-  function mascot(type, color, { legs = true, wave = false } = {}) {
-    const limbs = legs
-      ? `<path d="M48 88 44 108h-7M72 88l6 20h7" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
-         <path d="M${wave ? '94 44l12-16' : '96 60l14 6'}M26 58 12 66" stroke="${INK}" stroke-width="3.5" fill="none" stroke-linecap="round"/>
-         ${wave ? `<path d="M104 14l3-7M112 20l6-4" stroke="${INK}" stroke-width="3" stroke-linecap="round"/>` : ''}`
-      : '';
-    return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${limbs}${MASCOTS[type](color)}</svg>`;
+  function figure(kind, color) {
+    return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${(FIGURES[kind] || FIGURES.movie)(color)}</svg>`;
   }
 
-  return { cover, mascot, sparkle: shape.sparkle };
+  return { cover, figure, sparkle: shape.sparkle };
 })();

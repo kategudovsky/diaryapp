@@ -57,7 +57,7 @@ window.Diary = window.Diary || {};
     var days = Diary.TRASH_RETENTION_DAYS;
 
     var body = trashed.length === 0
-      ? '<div class="empty">' + Diary.covers.mascot('book', '#EC1864') + '<p>Корзина пуста</p><span class="empty-hint">Удалённые записи будут появляться здесь.</span></div>'
+      ? '<div class="empty">' + Diary.covers.figure('trash', '#EC1864') + '<p>Корзина пуста</p><span class="empty-hint">Удалённые записи будут появляться здесь.</span></div>'
       : '<div class="grid">' + trashed.map(trashCardHtml).join('') + '</div>';
 
     app.innerHTML = '' +
@@ -70,7 +70,7 @@ window.Diary = window.Diary || {};
       '<h1>Корзина</h1>' +
       '<p class="coll-sub">Удалённые записи хранятся здесь ' + days + ' ' + utils.plural(days, ['день', 'дня', 'дней']) + ', затем удаляются навсегда.</p>' +
       '</div>' +
-      '<div class="coll-mascot">' + Diary.covers.mascot('book', '#EC1864', { wave: true }) + '</div>' +
+      '<div class="coll-figure">' + Diary.covers.figure('trash', '#EC1864') + '</div>' +
       '</div>' +
       '<div class="coll-tools">' +
       '<button type="button" class="btn btn--ghost" data-empty-trash' + (trashed.length ? '' : ' disabled') + '>Очистить корзину</button>' +

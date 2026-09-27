@@ -47,7 +47,7 @@ window.Diary = window.Diary || {};
       '<h1>' + esc(opts.title) + '</h1>' +
       '<p class="coll-sub">' + esc(opts.sub) + '</p>' +
       '</div>' +
-      '<div class="coll-mascot">' + Diary.covers.mascot('series', '#FFD1E4', { wave: true }) +
+      '<div class="coll-figure coll-figure--still">' + Diary.covers.figure('collections', '#FFD1E4') +
       '<svg class="doodle" viewBox="0 0 60 60" aria-hidden="true">' + Diary.covers.sparkle(30, 30, 26, 'currentColor') + '</svg></div>' +
       '</div>' +
       '<div class="coll-tools">' + opts.tools + '</div>' +
@@ -77,7 +77,7 @@ window.Diary = window.Diary || {};
   function renderOverview(app) {
     var collections = collRepo.getAll();
     var body = collections.length === 0
-      ? '<div class="empty">' + Diary.covers.mascot('series', '#EC1864') + '<p>Пока нет подборок</p>' +
+      ? '<div class="empty">' + Diary.covers.figure('collections', '#EC1864') + '<p>Пока нет подборок</p>' +
         '<span class="empty-hint">Создайте первую, чтобы собрать тематическую коллекцию из всего, что у вас есть.</span></div>'
       : '<div class="packs">' + collections.map(packHtml).join('') + '</div>';
 
@@ -130,7 +130,7 @@ window.Diary = window.Diary || {};
           '<button type="button" class="collection-remove" data-remove="' + e.id + '" title="Убрать из подборки" aria-label="Убрать «' + esc(e.title) + '» из подборки">×</button>' +
           '</div>';
       }).join('') + '</div>'
-      : '<div class="empty">' + Diary.covers.mascot('series', '#EC1864') + '<p>Подборка пуста</p><span class="empty-hint">Добавьте записи из вашего хранилища.</span></div>';
+      : '<div class="empty">' + Diary.covers.figure('collections', '#EC1864') + '<p>Подборка пуста</p><span class="empty-hint">Добавьте записи из вашего хранилища.</span></div>';
 
     app.innerHTML = '' +
       '<section class="coll" style="' + pageVars() + '">' +

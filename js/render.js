@@ -97,12 +97,12 @@ window.Diary = window.Diary || {};
   }
 
   function emptyStateHtml(hasAny, category) {
-    var mascot = Diary.covers.mascot(category || 'movie', category ? Diary.THEME[category].m : '#CFD72A');
+    var fig = Diary.covers.figure(category || 'movie', category ? Diary.THEME[category].m : '#CFD72A');
     if (!hasAny) {
-      return '<div class="empty">' + mascot + '<p>Пока пусто</p><span class="empty-hint">Добавьте первую запись — дневник начнётся с неё.</span>' +
+      return '<div class="empty">' + fig + '<p>Пока пусто</p><span class="empty-hint">Добавьте первую запись — дневник начнётся с неё.</span>' +
         '<button class="btn" data-action="add"' + (category ? ' data-category="' + category + '"' : '') + ' type="button">+ Положить первое</button></div>';
     }
-    return '<div class="empty">' + mascot + '<p>Ничего не нашлось</p><span class="empty-hint">Попробуйте изменить поиск или фильтры.</span></div>';
+    return '<div class="empty">' + fig + '<p>Ничего не нашлось</p><span class="empty-hint">Попробуйте изменить поиск или фильтры.</span></div>';
   }
 
   function renderGrid(container, list, allList, category) {
