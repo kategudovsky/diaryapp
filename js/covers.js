@@ -1,6 +1,8 @@
 // Генеративные «открытки»-обложки в стиле плоских иллюстраций: формы, мордочки, яркие пары цветов.
 // Одинаковое название всегда даёт одинаковую обложку.
-window.Covers = (() => {
+window.Diary = window.Diary || {};
+
+Diary.covers = (() => {
   const INK = '#2B1810';
 
   const PALETTES = [
@@ -157,9 +159,9 @@ window.Covers = (() => {
   const cache = new Map();
 
   function cover(item, { text = true } = {}) {
-    const key = `${item.type}|${item.title}|${text}`;
+    const key = `${item.category}|${item.title}|${text}`;
     if (cache.has(key)) return cache.get(key);
-    const h = hash(item.type + item.title);
+    const h = hash(item.category + item.title);
     const R = rng(h);
     const p = PALETTES[h % PALETTES.length];
     const tpl = templates[Math.floor(R() * templates.length)];
@@ -179,7 +181,7 @@ window.Covers = (() => {
 
   // Талисманы папок: персонажи с ручками и ножками
   const MASCOTS = {
-    film: (c) => shape.burst(60, 52, 40, c, 7) + face(60, 52, 9),
+    movie: (c) => shape.burst(60, 52, 40, c, 7) + face(60, 52, 9),
     series: (c) => shape.flower(60, 50, 42, c, 5) + face(60, 52, 8),
     book: (c) => shape.flower(60, 50, 40, c, 4) + face(60, 52, 8),
     game: (c) => `<path d="M24 60C18 28 44 12 64 16 92 20 104 44 96 70 90 92 60 96 42 88 30 82 26 72 24 60Z" fill="${c}"/>` + face(62, 50, 8),
@@ -194,9 +196,5 @@ window.Covers = (() => {
     return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${limbs}${MASCOTS[type](color)}</svg>`;
   }
 
-  function star(filled, size = 22) {
-    return `<svg viewBox="0 0 24 24" width="${size}" height="${size}" aria-hidden="true"><path d="M12 2.5l2.6 6 6.4.6-4.8 4.3 1.4 6.3L12 16.4 6.4 19.7l1.4-6.3L3 9.1l6.4-.6z" fill="${filled ? '#FFD23F' : 'none'}" stroke="${INK}" stroke-width="1.8" stroke-linejoin="round"/></svg>`;
-  }
-
-  return { cover, mascot, star, sparkle: shape.sparkle };
+  return { cover, mascot, sparkle: shape.sparkle };
 })();
