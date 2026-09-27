@@ -1,0 +1,32 @@
+<!doctype html>
+<html lang="ru">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Картотека</title>
+  <meta name="description" content="Личная картотека фильмов, сериалов, книг и игр">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <a class="logo" href="#/" aria-label="Картотека — на главную">карто<b>тека</b></a>
+    <div class="search" role="search">
+      <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
+      <input id="global-search" type="search" placeholder="Найти во всех папках…" autocomplete="off" aria-label="Поиск по картотеке">
+      <div class="search-results" id="search-results" hidden></div>
+    </div>
+    <button class="btn btn--add" data-action="add" type="button"><span aria-hidden="true">+</span> Добавить</button>
+  </header>
+
+  <main id="app"></main>
+  <div id="modal-root"></div>
+  <div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+  <script src="js/data.js"></script>
+  <script src="js/covers.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>
