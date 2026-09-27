@@ -7,7 +7,7 @@
     book:   { label: 'Книги',   forms: ['книга', 'книги', 'книг'],        code: 'BOOK', c: '#1E5A3A', fi: '#FFF6E8', m: '#FF9ACB', verb: 'Читаю',  unit: 'стр.',  grid: 'rgba(255,246,232,.1)' },
     game:   { label: 'Игры',    forms: ['игра', 'игры', 'игр'],           code: 'GAME', c: '#C9F04B', fi: '#2B1810', m: '#8B5CF6', verb: 'Играю',  unit: '%',     grid: 'rgba(43,24,16,.08)' },
   };
-  const ORDER = ['film', 'series', 'book', 'game'];
+  const ORDER = ['film', 'game', 'book', 'series']; // Ф-И-К-С
   const STATUS = {
     want:     { label: 'Хочу',      c: '#FFD23F' },
     progress: { label: null,        c: '#86B6F2' },
@@ -82,10 +82,12 @@
     if (type) {
       document.body.style.setProperty('--page', TYPES[type].c);
       document.body.style.setProperty('--grid', TYPES[type].grid);
+      document.body.style.setProperty('--page-fi', TYPES[type].fi);
       renderCollection(type);
     } else {
       document.body.style.removeProperty('--page');
       document.body.style.removeProperty('--grid');
+      document.body.style.removeProperty('--page-fi');
       renderHome();
     }
   }
@@ -99,8 +101,9 @@
       <article class="folder folder--title" style="--c:#FFF1DD;--fi:#2B1810;z-index:10">
         <div class="folder-tab" aria-hidden="true"><small>FILE_00 //</small>архив</div>
         <div class="folder-body title-sheet">
-          <div class="mono">FILE_00 // личный архив · ${YEAR}</div>
-          <h1>Моя<br>картотека</h1>
+          <div class="mono">FILE_00 // идея фикс · ${YEAR}</div>
+          <h1>фикс</h1>
+          <p class="decode">${ORDER.map((t) => `<span style="${typeVars(t)}"><b>${TYPES[t].label[0]}</b>${TYPES[t].label.slice(1).toLowerCase()}</span>`).join('')}</p>
           <p class="lead">Всё, что посмотрено, прочитано и пройдено — разложено по папкам.</p>
           <div class="mascot-row">
             ${ORDER.map((t, i) => `<a href="#/${t}" class="mascot-link" style="--d:${i * 0.15}s" aria-label="${TYPES[t].label}">${mascot(t, TYPES[t].c, { wave: i === 2 })}</a>`).join('')}
@@ -316,7 +319,7 @@
             <textarea class="notes" data-notes rows="4" placeholder="Что запомнилось?">${esc(it.notes)}</textarea>
           </div>
 
-          <button type="button" class="link-danger" data-delete>Удалить из картотеки</button>
+          <button type="button" class="link-danger" data-delete>Удалить из фикса</button>
         </div>
       </div>`, it.type);
   }
@@ -429,7 +432,7 @@
     const untag = t.closest('[data-untag]');
     if (untag) { it.tags.splice(Number(untag.dataset.untag), 1); save(); refreshDetail(it.id); return; }
     if (t.closest('[data-delete]')) {
-      if (!confirm(`Удалить «${it.title}» из картотеки?`)) return;
+      if (!confirm(`Удалить «${it.title}» из фикса?`)) return;
       items = items.filter((x) => x.id !== it.id);
       save(); closeModal(); render(); toast('Карточка удалена');
     }

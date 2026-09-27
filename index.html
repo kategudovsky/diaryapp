@@ -3,8 +3,8 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Картотека</title>
-  <meta name="description" content="Личная картотека фильмов, сериалов, книг и игр">
+  <title>Фикс</title>
+  <meta name="description" content="Фикс — фильмы, игры, книги, сериалы. Личная коллекция того, что посмотрено, прочитано и пройдено">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Onest:wght@400;500;600;700;800;900&family=Caveat:wght@500;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
@@ -12,10 +12,13 @@
 </head>
 <body>
   <header class="topbar">
-    <a class="logo" href="#/" aria-label="Картотека — на главную">карто<b>тека</b></a>
+    <a class="logo" href="#/" aria-label="Фикс — фильмы, игры, книги, сериалы. На главную">
+      <span class="logo-mark" aria-hidden="true"><i style="--c:#FF5B37;--fi:#FFF6E8">ф</i><i style="--c:#C9F04B;--fi:#2B1810">и</i><i style="--c:#1E5A3A;--fi:#FFF6E8">к</i><i style="--c:#FF9ACB;--fi:#2B1810">с</i></span>
+      <span class="logo-sub" aria-hidden="true"><b>ф</b>ильмы · <b>и</b>гры · <b>к</b>ниги · <b>с</b>ериалы</span>
+    </a>
     <div class="search" role="search">
       <svg class="search-icon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>
-      <input id="global-search" type="search" placeholder="Найти во всех папках…" autocomplete="off" aria-label="Поиск по картотеке">
+      <input id="global-search" type="search" placeholder="Найти во всех папках…" autocomplete="off" aria-label="Поиск по всем папкам">
       <div class="search-results" id="search-results" hidden></div>
     </div>
     <button class="btn btn--add" data-action="add" type="button"><span aria-hidden="true">+</span> Добавить</button>
