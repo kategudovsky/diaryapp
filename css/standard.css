@@ -164,3 +164,25 @@ html[data-design="standard"] .cal-nav { border: 1px solid var(--line-strong) !im
 html[data-design="standard"] .cal-nav:hover { background: var(--hover) !important; border-color: var(--ink) !important; }
 html[data-design="standard"] .pick-icon { stroke-width: 1.4 !important; }
 html[data-design="standard"] .cal-foot { border-top-color: var(--line) !important; border-top-width: 1px !important; }
+
+/* ================= Заголовки — Lora, рукописные подписи, контурные фигуры ================= */
+/* Lora стоит там же, где в дофаминовом Nauryz: логотип, папки, заголовки страниц,
+   подборки, «О приложении». Заголовки в окне записи остаются на Onest. */
+html[data-design="standard"] .footer-word, html[data-design="standard"] .folder-vtitle, html[data-design="standard"] .title-sheet h1, html[data-design="standard"] .coll-hero h1, html[data-design="standard"] .pack-name, html[data-design="standard"] .home-collections h2, html[data-design="standard"] .about-block h2 {
+  font-family: 'Lora', Georgia, serif !important; font-weight: 400 !important; letter-spacing: -.01em !important; }
+
+/* рукописные подписи в окнах записи и подборки — как «выбрано N» */
+html[data-design="standard"] .hand-note { display: inline !important; color: var(--ink-2) !important; }
+
+/* контурные фигуры: тонко и светло */
+html[data-design="standard"] .folder-figure, html[data-design="standard"] .title-deco, html[data-design="standard"] .stat-fig, html[data-design="standard"] .coll-figure, html[data-design="standard"] .empty > svg { display: block !important; }
+html[data-design="standard"] .fig-outline { opacity: .38; }
+html[data-design="standard"] .stat-fig { width: 92px; right: -14px; bottom: -16px; }
+html[data-design="standard"] .coll-figure .fig-outline { opacity: .3; }
+html[data-design="standard"] .doodle { display: none !important; }
+html[data-design="standard"] .empty > svg { margin: 0 auto; }
+
+/* наведение на плитки статистики и стикер подборок */
+html[data-design="standard"] .stat-tile:hover { background: var(--hover) !important; box-shadow: inset 0 0 0 1px var(--ink) !important; }
+html[data-design="standard"] .stat-tile:hover .fig-outline { opacity: .6; }
+html[data-design="standard"] .sticker--link:hover { background: var(--hover) !important; border-color: var(--ink) !important; }

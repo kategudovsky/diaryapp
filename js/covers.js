@@ -262,7 +262,22 @@ Diary.covers = (() => {
     trash: (c) => shape.ring(60, 60, 56, c),
   };
 
+  // Стандартный дизайн: те же фигуры, но одним тонким контуром без заливки.
+  // Нарисованы отдельно, а не обводкой цветных: у цветка и астериска проступили
+  // бы внутренние линии наложенных частей.
+  const OUTLINE = {
+    movie: () => { const pts = []; for (let i = 0; i < 24; i++) { const a = -Math.PI / 2 + i * Math.PI / 12, rr = i % 2 ? 28 : 56; pts.push(`${f(60 + Math.cos(a) * rr)},${f(60 + Math.sin(a) * rr)}`); } return `<polygon points="${pts.join(' ')}" stroke-linejoin="round"/>`; },
+    game: () => [0, 45, 90, 135].map((a) => `<line x1="60" y1="8" x2="60" y2="112" transform="rotate(${a} 60 60)"/>`).join('') + '<circle cx="60" cy="60" r="10"/>',
+    book: () => { const pts = []; for (let i = 0; i <= 180; i++) { const a = i / 180 * Math.PI * 2, rr = 42 + 14 * Math.cos(6 * a); pts.push(`${f(60 + Math.cos(a) * rr)},${f(60 + Math.sin(a) * rr)}`); } return `<polygon points="${pts.join(' ')}"/><circle cx="60" cy="60" r="12"/>`; },
+    series: () => '<path d="M60 4Q66 54 116 60Q66 66 60 116Q54 66 4 60Q54 54 60 4Z" stroke-linejoin="round"/>',
+    collections: () => '<ellipse cx="60" cy="27" rx="42" ry="16"/><ellipse cx="63" cy="60" rx="53" ry="15"/><ellipse cx="58" cy="94" rx="47" ry="18"/>',
+    trash: () => '<circle cx="60" cy="60" r="50"/><circle cx="60" cy="60" r="34"/>',
+  };
+
   function figure(kind, color) {
+    if (Diary.design && Diary.design.isStandard()) {
+      return `<svg class="fig-outline" viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"><g fill="none" stroke="#23201C" stroke-width="1.2" vector-effect="non-scaling-stroke">${(OUTLINE[kind] || OUTLINE.movie)()}</g></svg>`;
+    }
     return `<svg viewBox="0 0 120 120" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">${(FIGURES[kind] || FIGURES.movie)(color)}</svg>`;
   }
 
