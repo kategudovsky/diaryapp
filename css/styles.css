@@ -424,6 +424,12 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   scrollbar-width: none;
   /* место для «плечиков» активного язычка */
   padding-right: 20px;
+  /* Неактивные язычки сдвинуты вниз на 8px (transform ниже) и заходят под лист.
+     Без этого запаса они торчали бы за край ряда, ряд со скроллом становился
+     прокручиваемым по вертикали, и при клике браузер подкручивал его на 8px —
+     открытый язычок отрывался от листа. */
+  padding-bottom: 8px;
+  margin-bottom: -8px;
 }
 .status-tabs::-webkit-scrollbar { display: none; }
 .stab {
