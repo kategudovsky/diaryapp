@@ -179,6 +179,16 @@ window.Diary = window.Diary || {};
 
     window.addEventListener('hashchange', function () { switchTab(tabFromHash()); });
 
+    // Клик по разделу, в котором уже находишься (например, «Подборки» изнутри
+    // подборки), возвращает к началу раздела — адрес при этом не меняется.
+    document.querySelector('.mainnav').addEventListener('click', function (ev) {
+      var link = ev.target.closest('[data-nav]');
+      if (!link || link.getAttribute('href') !== window.location.hash) return;
+      ev.preventDefault();
+      if (state.currentTab === 'collections') Diary.collections.reset();
+      switchTab(link.getAttribute('data-nav'));
+    });
+
     repo.onChange(function () {
       if (!repo.isReady()) return;
       renderCurrentTab();

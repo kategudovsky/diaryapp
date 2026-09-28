@@ -40,7 +40,6 @@ window.Diary = window.Diary || {};
   function headHtml(opts) {
     return '' +
       '<div class="coll-head">' +
-      opts.back +
       '<div class="coll-hero">' +
       '<div>' +
       '<div class="mono">' + opts.code + '</div>' +
@@ -84,7 +83,6 @@ window.Diary = window.Diary || {};
     app.innerHTML = '' +
       '<section class="coll" style="' + pageVars() + '">' +
       headHtml({
-        back: '<a class="back" href="#/">← все фиксы</a>',
         code: 'SET_00 // подборки',
         title: 'Подборки',
         sub: collections.length + ' ' + utils.plural(collections.length, ['подборка', 'подборки', 'подборок']) + ' · записи из любых папок',
@@ -95,8 +93,7 @@ window.Diary = window.Diary || {};
           '</form>'
       }) +
       '<div class="sheet sheet--flat">' + body + '</div>' +
-      '</section>' +
-      Diary.category.sideTabsHtml(null);
+      '</section>';
 
     if (formOpen) app.querySelector('[data-col-form] input').focus();
   }
@@ -135,7 +132,6 @@ window.Diary = window.Diary || {};
     app.innerHTML = '' +
       '<section class="coll" style="' + pageVars() + '">' +
       headHtml({
-        back: '<button type="button" class="back" data-col-back>← все подборки</button>',
         code: 'SET // подборка',
         title: col.name,
         sub: countText(entries.length),
@@ -143,8 +139,7 @@ window.Diary = window.Diary || {};
           '<button type="button" class="btn btn--ghost" data-col-delete>Удалить подборку</button>'
       }) +
       '<div class="sheet sheet--flat">' + (pickerOpen ? pickerHtml(col) : '') + gridHtml + '</div>' +
-      '</section>' +
-      Diary.category.sideTabsHtml(null);
+      '</section>';
   }
 
   // ==================== PUBLIC ====================

@@ -18,10 +18,14 @@ window.Diary = window.Diary || {};
     return '--c:' + t.c + ';--fi:' + t.fi + ';--m:' + t.m;
   }
 
-  function sideTabsHtml(except) {
-    return '<nav class="side-tabs" aria-label="Другие папки">' +
-      Diary.CATEGORIES.filter(function (c) { return c !== except; }).map(function (c) {
-        return '<a class="side-tab" href="#/' + c + '" style="' + themeVars(c) + '">' + esc(Diary.CATEGORY_LABEL_PLURAL[c]) + '</a>';
+  // Язычки папок справа — навигация внутри «Всех фиксов». Показываем все четыре,
+  // язычок открытой папки выдвинут и сливается с фоном страницы.
+  function sideTabsHtml(current) {
+    return '<nav class="side-tabs" aria-label="Папки">' +
+      Diary.CATEGORIES.map(function (c) {
+        var on = c === current;
+        return '<a class="side-tab' + (on ? ' is-current' : '') + '" href="#/' + c + '" style="' + themeVars(c) + '"' +
+          (on ? ' aria-current="page"' : '') + '>' + esc(Diary.CATEGORY_LABEL_PLURAL[c]) + '</a>';
       }).join('') +
       '</nav>';
   }
@@ -44,10 +48,10 @@ window.Diary = window.Diary || {};
     }).join('');
     var sorts = [['date_desc', 'Сначала новые'], ['date_asc', 'Сначала старые'], ['rating_desc', 'По оценке'], ['title_asc', 'По названию А–Я']];
 
-    app.innerHTML = '' +
+    // Язычки идут первыми: на компьютере они закреплены справа, на телефоне — ряд под шапкой.
+    app.innerHTML = sideTabsHtml(cat) +
       '<section class="coll" style="' + themeVars(cat) + '">' +
       '<div class="coll-head">' +
-      '<a class="back" href="#/">← все фиксы</a>' +
       '<div class="coll-hero">' +
       '<div>' +
       '<div class="mono">' + t.code + '_0' + (Diary.CATEGORIES.indexOf(cat) + 1) + ' // папка</div>' +
@@ -71,8 +75,7 @@ window.Diary = window.Diary || {};
       '</div>' +
       '<nav class="status-tabs" data-status-tabs aria-label="Статус"></nav>' +
       '<div class="sheet"><div class="grid" data-grid></div></div>' +
-      '</section>' +
-      sideTabsHtml(cat);
+      '</section>';
 
     mounted = cat;
     update(app);

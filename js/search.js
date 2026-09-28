@@ -74,7 +74,6 @@ window.Diary = window.Diary || {};
     app.innerHTML = '' +
       '<section class="coll" style="--c:' + p.c + ';--fi:' + p.fi + '">' +
       '<div class="coll-head">' +
-      '<a class="back" href="#/">← все фиксы</a>' +
       '<div class="coll-hero">' +
       '<div>' +
       '<div class="mono">FIND // поиск</div>' +
@@ -92,8 +91,7 @@ window.Diary = window.Diary || {};
       '</div>' +
       '<nav class="status-tabs" data-search-tabs aria-label="Папка"></nav>' +
       '<div class="sheet"><div data-search-results></div></div>' +
-      '</section>' +
-      Diary.category.sideTabsHtml(null);
+      '</section>';
     mounted = true;
     update(app);
   }
