@@ -157,4 +157,10 @@ html[data-design="standard"] .search-snippet mark, html[data-design="standard"] 
 html[data-design="standard"] .search-snippet { background: transparent !important; border-color: var(--line-strong) !important; }
 html[data-design="standard"] .pick-btn { border: 1px solid var(--line-strong) !important; background: transparent !important; box-shadow: none !important; }
 html[data-design="standard"] .pick-btn[aria-expanded="true"], html[data-design="standard"] .pick-btn:focus-visible { border-color: var(--ink) !important; }
-html[data-design="standard"] .pick-pop, html[data-design="standard"] .cal-pop, html[data-design="standard"] [class*="-pop"] { border-width: 1px !important; box-shadow: none !important; }
+
+/* календарь и список месяцев: те же линии 1px, что у остальных полей */
+html[data-design="standard"] .pick-panel { border: 1px solid var(--line-strong) !important; box-shadow: none !important; background: var(--paper) !important; }
+html[data-design="standard"] .cal-nav { border: 1px solid var(--line-strong) !important; background: transparent !important; }
+html[data-design="standard"] .cal-nav:hover { background: var(--hover) !important; border-color: var(--ink) !important; }
+html[data-design="standard"] .pick-icon { stroke-width: 1.4 !important; }
+html[data-design="standard"] .cal-foot { border-top-color: var(--line) !important; border-top-width: 1px !important; }
