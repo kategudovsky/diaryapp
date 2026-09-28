@@ -1,31 +1,11 @@
 /* ============ Шрифт заголовков ============ */
-@font-face {
-  font-family: 'Soledago';
-  src: url('../fonts/Soledago.woff2') format('woff2'),
-       url('../fonts/Soledago.woff') format('woff'),
-       url('../fonts/Soledago.otf') format('opentype'),
-       url('../fonts/Soledago.ttf') format('truetype');
-  font-weight: 100 900; /* одно начертание на все веса — без искусственного жирного */
-  font-display: swap;
-}
-
-/* Второй вариант для заголовков — Nauryz Red Keds (© 2024 Red Keds, бесплатный).
-   Включается адресом ?font=nauryz. */
+/* Nauryz Red Keds (© 2024 Red Keds, бесплатный), в файле только кириллица, латиница и знаки. */
 @font-face {
   font-family: 'NauryzRedKeds';
   src: url('../fonts/NauryzRedKeds.woff2') format('woff2');
-  font-weight: 100 900;
+  font-weight: 100 900; /* одно начертание на все веса — без искусственного жирного */
   font-display: swap;
 }
-html[data-display="nauryz"] { --display: 'NauryzRedKeds', 'Onest', system-ui, sans-serif; }
-/* Nauryz заметно шире Soledago — заголовки мельче и с запасом по высоте. */
-html[data-display="nauryz"] .title-sheet h1 { font-size: clamp(60px, 6.6vw, 104px); line-height: 1; margin-top: 10px; }
-html[data-display="nauryz"] .coll-hero h1 { font-size: clamp(54px, 8.4vw, 128px); line-height: 1; margin-top: 14px; }
-html[data-display="nauryz"] .folder-vtitle { font-size: clamp(44px, 7vh, 84px); }
-html[data-display="nauryz"] .detail-info h2 { font-size: clamp(28px, 3.4vw, 44px); line-height: 1.05; }
-html[data-display="nauryz"] .add-head h2 { font-size: clamp(28px, 3.2vw, 40px); }
-html[data-display="nauryz"] .pack-name { font-size: 25px; line-height: 1.05; }
-html[data-display="nauryz"] .logo-word { font-size: 28px; }
 
 /* ============ Токены ============ */
 :root {
@@ -48,8 +28,8 @@ html[data-display="nauryz"] .logo-word { font-size: 28px; }
   --tab-w: 50px;      /* ширина боковых язычков папок */
   --gutter: 28px;
 
-  /* Заголовки — Soledago (файл в fonts/). Пока файла нет, браузер берёт Onest. */
-  --display: 'Soledago', 'Onest', system-ui, sans-serif;
+  /* Заголовки — Nauryz Red Keds (файл в fonts/). Пока он не загрузился, браузер берёт Onest. */
+  --display: 'NauryzRedKeds', 'Onest', system-ui, sans-serif;
   --font: 'Onest', system-ui, -apple-system, 'Segoe UI', sans-serif;
   --hand: 'Caveat', 'Comic Sans MS', cursive;
   --mono: 'JetBrains Mono', ui-monospace, 'SFMono-Regular', monospace;
@@ -99,7 +79,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-/* Заголовки набраны Soledago. Трекинг подогнан под Onest; когда Soledago
+/* Заголовки набраны Nauryz. Трекинг подогнан под запасной Onest; когда Nauryz
    загрузился, app.js ставит .has-display-font и трекинг ослабляется. */
 .logo-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .detail-info h2, .add-head h2 {
   font-family: var(--display);
@@ -154,7 +134,7 @@ button, input, select, textarea { font: inherit; color: inherit; }
 /* логотип: слово «фикс» и расшифровка */
 .logo { display: flex; align-items: center; gap: 12px; text-decoration: none; color: var(--ink); }
 .logo-word {
-  font-weight: 900; font-size: 34px; line-height: 1; letter-spacing: -.07em;
+  font-weight: 900; font-size: 28px; line-height: 1; letter-spacing: -.07em;
   color: var(--tomato);
   transform: rotate(-3deg);
   transition: transform .25s cubic-bezier(.3, 1.6, .5, 1);
@@ -257,7 +237,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
   margin: 0;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
-  font-size: clamp(54px, 8.2vh, 100px);
+  font-size: clamp(44px, 7vh, 84px);
   font-weight: 800;
   letter-spacing: -.055em;
   line-height: .82;
@@ -307,10 +287,10 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 .title-sheet h1 {
   margin: 2px 0 0;
   color: var(--tomato);
-  font-size: clamp(90px, 10vw, 150px);
+  font-size: clamp(60px, 6.6vw, 104px);
   font-weight: 900;
   letter-spacing: -.07em;
-  line-height: .8;
+  line-height: 1;
 }
 .decode { margin: -2px 0 0; display: flex; flex-wrap: wrap; gap: 6px; }
 .decode span { background: var(--c); color: var(--fi); border-radius: 999px; padding: 5px 12px 6px; font-size: 15px; font-weight: 600; }
@@ -368,11 +348,11 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 .back:hover { transform: translateX(-4px) rotate(-2deg); }
 .coll-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-top: 18px; }
 .coll-hero h1 {
-  margin: 6px 0 .16em;
-  font-size: clamp(72px, 12vw, 170px);
+  margin: 14px 0 .16em;
+  font-size: clamp(54px, 8.4vw, 128px);
   font-weight: 800;
   letter-spacing: -.065em;
-  line-height: .82;
+  line-height: 1;
 }
 .coll-sub { margin: 0; font-size: 17px; font-weight: 500; opacity: .9; }
 .coll-figure { position: relative; width: clamp(120px, 15vw, 200px); flex: none; }
@@ -543,7 +523,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 .detail-cover { border: 2px solid var(--ink); border-radius: 22px; overflow: hidden; transform: rotate(-2deg); position: sticky; top: 0; }
 .detail-cover svg { display: block; width: 100%; }
 .detail-info { display: grid; gap: 20px; min-width: 0; }
-.detail-info h2 { margin: 0; font-size: clamp(34px, 4.4vw, 56px); font-weight: 800; letter-spacing: -.05em; line-height: .92; }
+.detail-info h2 { margin: 0; font-size: clamp(28px, 3.4vw, 44px); font-weight: 800; letter-spacing: -.05em; line-height: 1.05; }
 .detail-sub { margin: -10px 0 0; font-size: 16px; color: var(--ink-2); }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; }
 
@@ -612,7 +592,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 .add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; }
 .field--wide { grid-column: 1 / -1; }
 .add-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
-.add-head h2 { margin: 0; font-size: clamp(34px, 4vw, 50px); font-weight: 800; letter-spacing: -.05em; line-height: .95; }
+.add-head h2 { margin: 0; font-size: clamp(28px, 3.2vw, 40px); font-weight: 800; letter-spacing: -.05em; line-height: .95; }
 .add-head .hand-note { transform: rotate(-4deg); }
 .type-chips { grid-column: 1 / -1; }
 .type-chips .chip { font-size: 16px; padding: 9px 18px 10px; }
@@ -735,7 +715,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 .pack-tab::before { right: 100%; background: radial-gradient(circle at 0 0, transparent calc(var(--r) - .5px), var(--tc) var(--r)); }
 .pack-tab::after  { left: 100%;  background: radial-gradient(circle at 100% 0, transparent calc(var(--r) - .5px), var(--tc) var(--r)); }
 .pack-body { display: flex; flex-direction: column; gap: 14px; background: var(--c); border-radius: 22px; padding: 20px 20px 18px; min-height: 230px; overflow: hidden; }
-.pack-name { font-size: 30px; font-weight: 800; letter-spacing: -.045em; line-height: .95; }
+.pack-name { font-size: 25px; font-weight: 800; letter-spacing: -.045em; line-height: 1.05; }
 .pack-peek { display: flex; gap: 8px; }
 .pack-peek .mini-cover { flex: none; width: 66px; }
 
@@ -837,7 +817,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
 /* ============ Адаптив ============ */
 @media (max-width: 1180px) {
   .folder--title { flex-basis: 30%; }
-  .folder-vtitle { font-size: clamp(46px, 7vh, 80px); }
+  .folder-vtitle { font-size: clamp(40px, 6.4vh, 72px); }
 }
 
 /* планшет и телефон: папки стопкой сверху вниз, язычки сверху */
@@ -874,8 +854,7 @@ body[data-view="collection"] .logo-word { color: var(--page-fi, var(--ink)); }
   .folder-tab::after { top: auto; bottom: 0; left: 100%;
     background: radial-gradient(circle at 100% 0, transparent calc(var(--r) - .5px), var(--tc) var(--r)); }
 
-  .folder-vtitle { writing-mode: horizontal-tb; transform: none; align-self: auto; font-size: 46px; line-height: .9; }
-  html[data-display="nauryz"] .folder-vtitle { font-size: 34px; line-height: 1; padding-right: 70px; }
+  .folder-vtitle { writing-mode: horizontal-tb; transform: none; align-self: auto; font-size: 34px; line-height: 1; padding-right: 70px; }
   .folder-main { gap: 12px; }
   .folder-peek { display: flex; gap: 10px; overflow: hidden; -webkit-mask-image: linear-gradient(90deg, #000 70%, transparent); mask-image: linear-gradient(90deg, #000 70%, transparent); }
   .mini-cover { flex: none; width: 78px; }

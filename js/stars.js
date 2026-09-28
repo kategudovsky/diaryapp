@@ -1,7 +1,7 @@
 // Half-star rating: 5 slots, each a base outline star with a width-clipped
 // filled star on top (0%, 50% or 100% depending on the value). Used both for
 // static display in cards and as an interactive picker in the entry modal.
-// Звёзды нарисованы в стиле «Фикса»: лаймовая заливка и тёмный контур.
+// Звёзды нарисованы в стиле «Фикса»: жёлтая заливка и тёмный контур.
 window.Diary = window.Diary || {};
 
 (function (Diary) {

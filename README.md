@@ -9,7 +9,7 @@
 - **Обычный режим** — ваши записи из `localStorage` (ключи `mediaDiary.entries.v1` и `mediaDiary.collections.v1`).
 - **Демо** — `index.html?demo`: отдельное хранилище с примерами, настоящие записи не трогаются.
 
-Шрифт заголовков — Soledago, файл в `fonts/`.
+Шрифт заголовков — Nauryz Red Keds, файл в `fonts/`.
 
 Поиск по каталогам: скопируйте `js/secrets.example.js` в `js/secrets.js` и впишите ключи. Файл в `.gitignore`. Без него приложение работает, Google Books ищет и без ключа.
 
