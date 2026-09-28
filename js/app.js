@@ -60,6 +60,7 @@ window.Diary = window.Diary || {};
     renderCurrentTab({ full: true });
     updateNav();
     Diary.footer.render();
+    updateTrashFab();
     window.scrollTo(0, 0);
   }
 
@@ -81,6 +82,34 @@ window.Diary = window.Diary || {};
       a.classList.toggle('is-active', on);
       if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
     });
+  }
+
+  // ---- кнопка корзины в правом нижнем углу ----
+  // Счётчик удалённых записей. На компьютере кнопка живёт в правой полосе,
+  // куда не заходит ни контент, ни футер. На телефоне полосы нет, поэтому,
+  // когда прокрутка доходит до футера, кнопка встаёт над ним.
+  var FAB_GAP = 16;
+  var narrow = window.matchMedia('(max-width: 860px)');
+
+  function updateTrashFab() {
+    var fab = document.getElementById('trashFab');
+    var count = repo.getTrashed().length;
+    var badge = fab.querySelector('.trash-fab-count');
+    badge.textContent = count > 99 ? '99+' : String(count);
+    badge.hidden = count === 0;
+    fab.setAttribute('aria-label', 'Корзина' + (count ? ', записей: ' + count : ''));
+    var here = state.currentTab === 'trash';
+    fab.classList.toggle('is-active', here);
+    if (here) fab.setAttribute('aria-current', 'page'); else fab.removeAttribute('aria-current');
+    positionTrashFab();
+  }
+
+  function positionTrashFab() {
+    var fab = document.getElementById('trashFab');
+    var footer = document.getElementById('siteFooter');
+    if (!narrow.matches) { fab.style.bottom = ''; return; }
+    var top = footer.getBoundingClientRect().top;
+    fab.style.bottom = Math.max(FAB_GAP, window.innerHeight - top + FAB_GAP) + 'px';
   }
 
   // ---- тост ----
@@ -178,6 +207,8 @@ window.Diary = window.Diary || {};
     });
 
     window.addEventListener('hashchange', function () { switchTab(tabFromHash()); });
+    window.addEventListener('scroll', positionTrashFab, { passive: true });
+    window.addEventListener('resize', positionTrashFab);
 
     // Клик по разделу, в котором уже находишься (например, «Подборки» изнутри
     // подборки), возвращает к началу раздела — адрес при этом не меняется.
@@ -193,6 +224,7 @@ window.Diary = window.Diary || {};
       if (!repo.isReady()) return;
       renderCurrentTab();
       Diary.footer.render();
+      updateTrashFab();
     });
 
     Promise.all([repo.init(), Diary.collectionsRepo.init()]).then(function () {

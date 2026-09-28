@@ -1,5 +1,5 @@
 // Футер — последний лист картотеки: язычок сверху, название с расшифровкой,
-// где хранятся данные, корзина и переключатель дизайна (стандартный появится позже).
+// где хранятся данные и переключатель дизайна (стандартный появится позже).
 window.Diary = window.Diary || {};
 
 (function (Diary) {
@@ -30,7 +30,7 @@ window.Diary = window.Diary || {};
       '<div class="footer-col">' +
       '<h3 class="footer-label">Данные</h3>' +
       '<p>' + total + ' ' + utils.plural(total, ['запись', 'записи', 'записей']) + ' хранятся в этом браузере. Если очистить данные сайта, они пропадут.</p>' +
-      '<a class="footer-link" href="#/trash">Корзина' + (trashed ? '<span class="footer-count">' + trashed + '</span>' : '') + '</a>' +
+      (trashed ? '<p class="footer-muted">В корзине ' + trashed + ' ' + utils.plural(trashed, ['запись', 'записи', 'записей']) + ' — кнопка в правом нижнем углу.</p>' : '') +
       '</div>' +
 
       '<div class="footer-col">' +

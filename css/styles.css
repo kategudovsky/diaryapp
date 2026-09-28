@@ -27,6 +27,7 @@
   --r: 14px;          /* радиус вогнутых «плечиков» язычка */
   --tab-w: 50px;      /* ширина боковых язычков папок */
   --gutter: 28px;
+  --lane: calc(var(--gutter) + var(--tab-w)); /* правая полоса: язычки папок и кнопка корзины */
 
   /* Заголовки — Nauryz Red Keds (файл в fonts/). Пока он не загрузился, браузер берёт Onest. */
   --display: 'NauryzRedKeds', 'Onest', system-ui, sans-serif;
@@ -820,7 +821,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 
 
 /* ============ Полка подборок на главной ============ */
-.home-collections { padding: 10px var(--gutter) 60px; }
+.home-collections { padding: 10px var(--lane) 60px var(--gutter); }
 .home-collections-head { display: flex; align-items: flex-end; justify-content: space-between; gap: 16px; margin-bottom: 8px; }
 .home-collections h2 { margin: 6px 0 0; font-size: clamp(34px, 3.4vw, 52px); line-height: 1; letter-spacing: -.02em; color: var(--ink); }
 .home-collections-all { font-weight: 700; color: var(--ink); text-decoration: none; padding: 8px 14px 9px; border: 2px solid var(--ink); border-radius: 999px; background: var(--cream); white-space: nowrap; }
@@ -838,8 +839,33 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .pack-new span { font-size: 40px; line-height: 1; font-weight: 400; }
 .pack-new:hover { background: var(--cream); border-color: var(--ink); }
 
+/* ============ Кнопка корзины ============ */
+/* Живёт в правой полосе (--lane), куда контент не заходит; цвета — наоборот
+   к странице: фон кнопки — цвет текста страницы, иконка — цвет фона. */
+.trash-fab {
+  position: fixed; right: 16px; bottom: 16px; z-index: 40;
+  width: 50px; height: 50px;
+  display: grid; place-items: center;
+  border-radius: 50%;
+  background: var(--page-fi, var(--ink));
+  color: var(--page, var(--cyan));
+  box-shadow: 0 6px 18px var(--shadow);
+  transition: transform .2s cubic-bezier(.3, 1.4, .5, 1), background .45s, color .45s;
+}
+.trash-fab svg { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2.2; stroke-linecap: round; stroke-linejoin: round; }
+.trash-fab:hover { transform: rotate(-10deg) scale(1.08); }
+.trash-fab.is-active { box-shadow: 0 0 0 3px var(--page, var(--cyan)), 0 0 0 5px var(--page-fi, var(--ink)); }
+.trash-fab-count {
+  position: absolute; top: -4px; right: -4px;
+  min-width: 22px; height: 22px; padding: 0 6px;
+  border-radius: 999px; border: 2px solid var(--page, var(--cyan));
+  background: var(--sun); color: var(--ink);
+  font: 800 11px/18px var(--font); text-align: center;
+}
+body.has-modal .trash-fab { display: none; }
+
 /* ============ Футер: последний лист картотеки ============ */
-.site-footer { padding: 70px var(--gutter) 0; }
+.site-footer { padding: 70px var(--lane) 0 var(--gutter); }
 .footer-sheet {
   --tc: var(--ink);
   position: relative;
@@ -863,9 +889,6 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .footer-decode { font: 500 13px var(--mono) !important; letter-spacing: .02em; color: #fff !important; }
 .footer-decode b { color: var(--tomato); }
 .footer-label { margin: 6px 0 12px; font: 600 11px var(--mono); letter-spacing: .08em; text-transform: uppercase; color: rgba(255, 255, 255, .55); }
-.footer-link { display: inline-flex; align-items: center; gap: 8px; color: #fff; font-weight: 700; text-decoration: none; border: 1.5px solid rgba(255, 255, 255, .5); border-radius: 999px; padding: 7px 14px 8px; }
-.footer-link:hover { background: rgba(255, 255, 255, .12); border-color: #fff; }
-.footer-count { min-width: 20px; height: 20px; padding: 0 6px; border-radius: 999px; background: var(--tomato); font-size: 11px; line-height: 20px; text-align: center; }
 .design-switch { display: inline-flex; padding: 4px; gap: 4px; border-radius: 999px; background: rgba(255, 255, 255, .1); }
 .design-switch button {
   border: 0; border-radius: 999px; padding: 8px 14px 9px;
@@ -963,8 +986,9 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   .packs { grid-template-columns: 1fr; }
   .pack-body { min-height: 150px; }
   .pack-new { min-height: 110px; flex-direction: row; }
-  .home-collections { padding-bottom: 30px; }
-  .site-footer { padding-top: 60px; }
+  .home-collections { padding: 10px var(--gutter) 30px; }
+  .trash-fab { right: 12px; width: 46px; height: 46px; }
+  .site-footer { padding: 60px var(--gutter) 0; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-sheet { padding: 30px 20px 18px; }
   .footer-tab { left: 20px; }
