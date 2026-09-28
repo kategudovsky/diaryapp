@@ -87,12 +87,11 @@ body.has-modal { overflow: hidden; }
 ::-webkit-scrollbar-corner { background: var(--sb-track); }
 @supports (-moz-appearance: none) {
   html { scrollbar-color: var(--sb-thumb) var(--sb-track); }
-  .modal, .picker-list, .lookup-results, .search-results, .field .notes { scrollbar-color: var(--sb-thumb) var(--sb-track); scrollbar-width: thin; }
+  .modal, .picker-list, .lookup-results, .search-results { scrollbar-color: var(--sb-thumb) var(--sb-track); scrollbar-width: thin; }
 }
 /* внутренние списки — на белом фоне */
 .picker-list, .lookup-results, .search-results { --sb-thumb: var(--ink); --sb-track: #FFFFFF; }
 .picker-list::-webkit-scrollbar, .lookup-results::-webkit-scrollbar, .search-results::-webkit-scrollbar { width: 12px; }
-.field .notes { --sb-thumb: var(--ink); --sb-track: #FFFFFF; }
 /* модальное окно прокручивается поверх затемнения */
 .modal { --sb-thumb: rgba(255, 255, 255, .85); --sb-track: transparent; }
 .modal::-webkit-scrollbar-thumb { border-color: transparent; background-clip: padding-box; }
@@ -146,10 +145,6 @@ button, input, select, textarea { font: inherit; color: inherit; }
 
 .hand-note { font: 700 26px/1 var(--hand); color: var(--tomato); }
 
-.bar { display: block; height: 7px; border-radius: 99px; background: rgba(28, 27, 58, .12); overflow: hidden; }
-.bar > span { display: block; height: 100%; border-radius: inherit; background: var(--ink); }
-.bar--big { height: 12px; margin-top: 10px; border: 2px solid var(--ink); background: var(--cream); }
-.bar--big > span { background: var(--blue); }
 
 /* ============ Верхняя панель ============ */
 .topbar {
@@ -367,14 +362,6 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 
 /* ============ Коллекция ============ */
 .coll { padding: 0 calc(var(--gutter) + 40px) 0 var(--gutter); color: var(--fi); }
-.back {
-  display: inline-block;
-  font-weight: 700; text-decoration: none;
-  background: var(--cream); color: var(--ink);
-  padding: 7px 14px 8px; border-radius: 999px;
-  transition: transform .2s;
-}
-.back:hover { transform: translateX(-4px) rotate(-2deg); }
 .coll-hero { display: flex; align-items: flex-end; justify-content: space-between; gap: 20px; margin-top: 18px; }
 .coll-hero h1 {
   margin: 14px 0 .16em;
@@ -486,7 +473,6 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .card-code { font: 500 10.5px var(--mono); letter-spacing: .08em; color: var(--ink-2); }
 .card h3 { margin: 0; font-size: 17px; font-weight: 700; letter-spacing: -.025em; line-height: 1.15; }
 .card .sub { font-size: 13.5px; color: var(--ink-2); }
-.stars-mini { display: flex; gap: 1px; }
 
 .empty { grid-column: 1 / -1; display: grid; justify-items: center; gap: 8px; padding: 50px 0; text-align: center; }
 .empty svg { width: 130px; }
@@ -588,18 +574,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   padding: 10px 12px;
   font-size: 15px;
 }
-.stars { display: flex; gap: 2px; }
-.stars button { border: 0; background: none; padding: 2px; cursor: pointer; transition: transform .15s; }
-.stars button:hover { transform: scale(1.2) rotate(-10deg); }
 
-.progress-edit { display: flex; align-items: center; gap: 8px; font-weight: 600; }
-.progress-edit input { width: 72px !important; text-align: center; padding: 8px 6px !important; }
-.progress-edit span { display: flex; align-items: center; gap: 8px; white-space: nowrap; }
-.round {
-  flex: none; width: 36px; height: 36px;
-  border: 2px solid var(--ink); border-radius: 50%;
-  background: var(--blue); font-size: 20px; line-height: 1; cursor: pointer;
-}
 
 .tags { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
 .tag {
@@ -610,29 +585,15 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   font-size: 14px; font-weight: 700;
 }
 .tag:nth-child(odd) { transform: rotate(-1.5deg); }
-.tag button { border: 0; background: rgba(28, 27, 58, .12); width: 20px; height: 20px; border-radius: 50%; cursor: pointer; line-height: 1; font-size: 14px; }
-.field .tag-input { width: 110px; border-style: dashed; border-radius: 999px; padding: 6px 12px; }
 
-.field .notes {
-  font: 600 23px/32px var(--hand);
-  border-radius: 16px;
-  padding: 4px 16px;
-  background: #FFFFFF repeating-linear-gradient(transparent 0 31px, rgba(96, 119, 212, .35) 31px 32px);
-  background-attachment: local;
-  resize: vertical;
-  min-height: 136px;
-}
 .link-danger { justify-self: start; border: 0; background: none; padding: 0; color: #C8124F; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
 
 /* форма добавления */
-.add-form { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 22px; }
-.field--wide { grid-column: 1 / -1; }
 .add-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
 .add-head h2 { margin: 0; font-size: clamp(28px, 3.2vw, 40px); font-weight: 800; letter-spacing: -.05em; line-height: .95; }
 .add-head .hand-note { transform: rotate(-4deg); }
 .type-chips { grid-column: 1 / -1; }
 .type-chips .chip { font-size: 16px; padding: 9px 18px 10px; }
-.add-actions { display: flex; justify-content: flex-end; }
 
 /* тост */
 .toast {
@@ -983,7 +944,7 @@ body.has-modal .trash-fab { display: none; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 26px 14px; }
 
   .modal { padding: 60px 12px 24px; }
-  .detail, .add-form, .edit-form, .edit-notes { grid-template-columns: 1fr; }
+  .detail, .edit-form, .edit-notes { grid-template-columns: 1fr; }
   .edit-side .detail-cover { max-width: 200px; }
   .mainnav { order: 0; flex-basis: 100%; }
   .mainnav a { font-size: 15px; padding: 7px 12px 8px; }

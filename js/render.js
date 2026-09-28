@@ -64,10 +64,6 @@ window.Diary = window.Diary || {};
     return Diary.covers.cover(entry, opts);
   }
 
-  function coverHtml(entry) {
-    return '<span class="cover">' + coverInner(entry) + '</span>';
-  }
-
   // Маленькая обложка — в папках на главной и в подборках.
   function thumbHtml(entry, i) {
     var rot = ((i || 0) % 3 - 1) * 2.5;
@@ -120,7 +116,6 @@ window.Diary = window.Diary || {};
     dateBadge: dateBadge,
     statusLabel: statusLabel,
     cardHtml: cardHtml,
-    coverHtml: coverHtml,
     coverInner: coverInner,
     thumbHtml: thumbHtml,
     tinyThumbHtml: tinyThumbHtml,

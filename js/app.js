@@ -51,6 +51,8 @@ window.Diary = window.Diary || {};
   }
 
   function switchTab(tab) {
+    // Смена страницы (в том числе кнопкой «назад» в браузере) закрывает окно записи.
+    if (Diary.modal.isOpen()) Diary.modal.close();
     if (state.currentTab === 'collections' && tab !== 'collections') Diary.collections.reset();
     state.currentTab = tab;
     Diary.category.unmount();

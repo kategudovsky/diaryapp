@@ -616,5 +616,5 @@ window.Diary = window.Diary || {};
     });
   }
 
-  Diary.modal = { setup: setup, openEntry: openEntry, isOpen: isOpen };
+  Diary.modal = { setup: setup, openEntry: openEntry, isOpen: isOpen, close: closeModal };
 })(window.Diary);

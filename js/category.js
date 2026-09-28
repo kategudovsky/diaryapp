@@ -131,5 +131,5 @@ window.Diary = window.Diary || {};
 
   function unmount() { mounted = null; }
 
-  Diary.category = { setup: setup, render: render, unmount: unmount, sideTabsHtml: sideTabsHtml };
+  Diary.category = { setup: setup, render: render, unmount: unmount };
 })(window.Diary);

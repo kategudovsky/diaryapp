@@ -160,7 +160,6 @@ window.Diary = window.Diary || {};
       if (t.closest('[data-col-new]')) { formOpen = !formOpen; render(app); return; }
       var pack = t.closest('[data-col]');
       if (pack) { openId = pack.getAttribute('data-col'); pickerOpen = false; render(app); window.scrollTo(0, 0); return; }
-      if (t.closest('[data-col-back]')) { openId = null; render(app); return; }
       if (t.closest('[data-col-pick]')) { pickerOpen = !pickerOpen; render(app); return; }
 
       var col = current();
