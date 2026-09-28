@@ -406,7 +406,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .status-tabs {
   display: flex; align-items: flex-end;
   margin-top: 30px;
-  padding-left: 26px;
+  /* язычки начинаются за скруглением листа (28px) + место под плечико (--r) */
+  padding-left: calc(28px + var(--r) + 4px);
   overflow-x: auto;
   scrollbar-width: none;
   /* место для «плечиков» активного язычка */
@@ -946,7 +947,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   .side-tabs { position: static; flex-direction: row; flex-wrap: wrap; gap: 6px; margin: 4px var(--gutter) 18px; }
   .side-tab { writing-mode: horizontal-tb; border-radius: 14px; transform: none; padding: 9px 14px 10px; filter: none; }
   .side-tab.is-current, .side-tab.is-current:hover { transform: none; padding: 9px 14px 10px; box-shadow: inset 0 0 0 2px var(--fi); }
-  .status-tabs { padding-left: 14px; }
+  .status-tabs { padding-left: calc(22px + var(--r) + 2px); }
   .stab { padding: 11px 16px 18px; font-size: 14px; }
   .sheet { padding: 24px 16px 40px; border-radius: 22px 22px 0 0; }
   .grid { grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); gap: 26px 14px; }

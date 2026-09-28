@@ -89,7 +89,7 @@ window.Diary = window.Diary || {};
 
     app.querySelector('[data-sub]').textContent = subtitle(all, cat);
 
-    var tabs = [['all', 'Все', '#FFFFFF']].concat(Diary.STATUS_KEYS.map(function (k) {
+    var tabs = [['all', 'Все', 'rgba(255, 255, 255, .55)']].concat(Diary.STATUS_KEYS.map(function (k) {
       return [k, Diary.STATUS_LABEL[cat][k], Diary.STATUS_COLOR[k]];
     }));
     app.querySelector('[data-status-tabs]').innerHTML = tabs.map(function (tab, i) {

@@ -106,7 +106,7 @@ window.Diary = window.Diary || {};
       : 'По запросу «' + q + '» — ' + all.length + ' ' + utils.plural(all.length, ['запись', 'записи', 'записей']) +
         (cols.length ? ' и ' + cols.length + ' ' + utils.plural(cols.length, ['подборка', 'подборки', 'подборок']) : '');
 
-    var tabs = [['all', 'Все', '#FFFFFF', all.length]].concat(Diary.CATEGORIES.map(function (c) {
+    var tabs = [['all', 'Все', 'rgba(255, 255, 255, .55)', all.length]].concat(Diary.CATEGORIES.map(function (c) {
       return [c, Diary.CATEGORY_LABEL_PLURAL[c], Diary.THEME[c].c, all.filter(function (e) { return e.category === c; }).length, Diary.THEME[c].fi];
     }));
     if (category !== 'all' && !all.some(function (e) { return e.category === category; })) category = 'all';
