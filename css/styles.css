@@ -790,7 +790,6 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .edit-notes .note-card, .edit-notes .quote-card { display: flex; align-items: flex-start; gap: 8px; }
 .edit-notes .note-card span, .edit-notes .quote-card span { flex: 1; white-space: pre-wrap; }
 .note-delete { flex: none; margin-top: 6px; border: 0; background: rgba(28, 27, 58, .12); width: 22px; height: 22px; border-radius: 50%; cursor: pointer; line-height: 1; font: 600 15px var(--font); font-style: normal; }
-.notes-empty { margin: 0; color: var(--ink-2); font-size: 14px; }
 .note-compose { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
 .note-compose textarea { width: 100%; min-height: 96px; resize: vertical; font-family: inherit; }
 .note-compose .btn { align-self: flex-end; }
@@ -798,7 +797,6 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .edit-actions { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .edit-actions .btn { margin-left: auto; }
 /* окно подборки */
-.sheet-card--narrow { width: min(720px, 100%); }
 .col-form { display: grid; gap: 22px; }
 /* Поле поиска лежит внутри .field, а её правило для input перебивает отступ
    под иконку — поэтому возвращаем его здесь, иначе лупа ложится на текст. */

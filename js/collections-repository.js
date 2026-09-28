@@ -90,15 +90,6 @@ window.Diary = window.Diary || {};
     notify();
   }
 
-  function addEntry(collectionId, entryId) {
-    var c = getById(collectionId);
-    if (!c || c.entryIds.indexOf(entryId) !== -1) return;
-    c.entryIds.push(entryId);
-    c.updatedAt = Date.now();
-    persist();
-    notify();
-  }
-
   function removeEntry(collectionId, entryId) {
     var c = getById(collectionId);
     if (!c) return;
@@ -140,7 +131,6 @@ window.Diary = window.Diary || {};
     rename: rename,
     setEntries: setEntries,
     remove: remove,
-    addEntry: addEntry,
     removeEntry: removeEntry,
     importItems: importItems
   };

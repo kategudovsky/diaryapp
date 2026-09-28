@@ -54,7 +54,6 @@ window.Diary = window.Diary || {};
     trigger.querySelector('.pick-caret').style.backgroundImage = CARET;
 
     var shell = {
-      trigger: trigger,
       panel: panel,
       isOpen: function () { return !panel.hidden; },
       open: function () {

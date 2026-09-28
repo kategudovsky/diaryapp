@@ -125,7 +125,6 @@ window.Diary = window.Diary || {};
   }
 
   Diary.render = {
-    matchesStatusFilter: matchesStatusFilter,
     matchesQuery: matchesQuery,
     filterAndSort: filterAndSort,
     dateBadge: dateBadge,
@@ -135,7 +134,6 @@ window.Diary = window.Diary || {};
     coverInner: coverInner,
     thumbHtml: thumbHtml,
     tinyThumbHtml: tinyThumbHtml,
-    emptyStateHtml: emptyStateHtml,
     renderGrid: renderGrid
   };
 })(window.Diary);

@@ -5,17 +5,19 @@
    Скругления те же, что в дофаминовом. Цветного акцента нет: выбранное инвертируется — тёмная плашка,
    светлый текст, без обводки. Активная вкладка статуса — крупнее и светлее
    остальных. Цветовые переменные дофаминовой палитры переопределены
-   нейтральными, чтобы цвет не просачивался в мелочи. */
+   нейтральными, чтобы цвет не просачивался в мелочи. Заголовки — Lora
+   (там же, где в дофаминовом Nauryz), фигуры — тонкие контуры из covers.js. */
 html[data-design="standard"] { --ink: #23201C; --ink-2: #8A8178; --line: rgba(35, 32, 28, .22); --line-strong: rgba(35, 32, 28, .55);
   --bg: #F3EFE9; --paper: #FBF8F4; --tomato: #23201C; --display: 'Onest', system-ui, sans-serif; --shadow: transparent; }
 html[data-design="standard"], html[data-design="standard"] body { background: var(--bg) !important; }
 html[data-design="standard"] body { background-image: none !important; color: var(--ink); }
 html[data-design="standard"] body::after { display: none !important; }
-html[data-design="standard"] .folder-figure, html[data-design="standard"] .title-deco, html[data-design="standard"] .stat-fig, html[data-design="standard"] .coll-figure, html[data-design="standard"] .empty > svg, html[data-design="standard"] .hand-note, html[data-design="standard"] .doodle { display: none !important; }
+html[data-design="standard"] .doodle { display: none !important; }
 html[data-design="standard"] .sticker, html[data-design="standard"] .decode span, html[data-design="standard"] .tag, html[data-design="standard"] .pack, html[data-design="standard"] .mini-cover, html[data-design="standard"] .detail-cover, html[data-design="standard"] .stat-tile, html[data-design="standard"] .btn, html[data-design="standard"] .chip, html[data-design="standard"] .card .cover { transform: none !important; }
 html[data-design="standard"] .card:hover .cover, html[data-design="standard"] .grid > :nth-child(even) .card:hover .cover, html[data-design="standard"] .card:nth-child(even):hover .cover, html[data-design="standard"] .pack:hover, html[data-design="standard"] .stat-tile:hover, html[data-design="standard"] .btn:hover, html[data-design="standard"] .chip:hover, html[data-design="standard"] .folder:hover .mini-cover { transform: none !important; }
 html[data-design="standard"] .folder, html[data-design="standard"] .pack, html[data-design="standard"] .side-tab, html[data-design="standard"] .sheet, html[data-design="standard"] .sheet-card, html[data-design="standard"] .cover, html[data-design="standard"] .mini-cover { filter: none !important; box-shadow: none !important; }
-html[data-design="standard"] .footer-word, html[data-design="standard"] .folder-vtitle, html[data-design="standard"] .title-sheet h1, html[data-design="standard"] .coll-hero h1, html[data-design="standard"] .pack-name, html[data-design="standard"] .home-collections h2, html[data-design="standard"] .about-block h2, html[data-design="standard"] .detail-info h2, html[data-design="standard"] .add-head h2 { font-family: var(--font) !important; font-weight: 300 !important; letter-spacing: -.02em !important; text-transform: uppercase; color: var(--ink) !important; }
+html[data-design="standard"] .footer-word, html[data-design="standard"] .folder-vtitle, html[data-design="standard"] .title-sheet h1, html[data-design="standard"] .coll-hero h1, html[data-design="standard"] .pack-name, html[data-design="standard"] .home-collections h2, html[data-design="standard"] .about-block h2, html[data-design="standard"] .detail-info h2, html[data-design="standard"] .add-head h2 { text-transform: uppercase; color: var(--ink) !important; }
+html[data-design="standard"] .detail-info h2, html[data-design="standard"] .add-head h2 { font-family: var(--font) !important; font-weight: 300 !important; letter-spacing: -.02em !important; }
 html[data-design="standard"] .title-sheet h1 { font-size: clamp(56px, 5.4vw, 88px) !important; line-height: .95 !important; }
 html[data-design="standard"] .coll-hero h1 { font-size: clamp(56px, 8vw, 128px) !important; line-height: .95 !important; }
 html[data-design="standard"] .folder-vtitle { font-size: clamp(40px, 6.4vh, 76px) !important; }
@@ -30,7 +32,7 @@ html[data-design="standard"] .mainnav a.is-active, html[data-design="standard"] 
 html[data-design="standard"] .btn, html[data-design="standard"] .btn--ghost, html[data-design="standard"] .btn--danger { background: transparent !important; color: var(--ink) !important; border: 1px solid var(--ink) !important; font-weight: 500; }
 html[data-design="standard"] .btn:hover { background: var(--paper) !important; }
 html[data-design="standard"] .btn--ghost { border-color: var(--line-strong) !important; }
-html[data-design="standard"] .search input, html[data-design="standard"] .field-inline input, html[data-design="standard"] .select select, html[data-design="standard"] .field input:not([type=radio]), html[data-design="standard"] .field textarea, html[data-design="standard"] .note-compose textarea, html[data-design="standard"] .inline-form input { background: transparent !important; border: 1px solid var(--line-strong) !important; color: var(--ink); }
+html[data-design="standard"] .search input, html[data-design="standard"] .field-inline input, html[data-design="standard"] .select select, html[data-design="standard"] .field input:not([type=radio]), html[data-design="standard"] .field textarea, html[data-design="standard"] .note-compose textarea { background: transparent !important; border: 1px solid var(--line-strong) !important; color: var(--ink); }
 html[data-design="standard"] .search-results { background: var(--paper); border-width: 1px; box-shadow: none; }
 html[data-design="standard"] .folder-body, html[data-design="standard"] .stat-tile, html[data-design="standard"] .sheet, html[data-design="standard"] .pack-body, html[data-design="standard"] .sheet-card, html[data-design="standard"] .footer-sheet, html[data-design="standard"] .confirm-card, html[data-design="standard"] .picker, html[data-design="standard"] .sheet-inner { background: var(--paper) !important; color: var(--ink) !important; box-shadow: inset 0 0 0 1px var(--line) !important; border: 0 !important; }
 html[data-design="standard"] .folder--title .folder-body { box-shadow: inset 0 0 0 1px var(--line-strong) !important; }
@@ -91,7 +93,6 @@ html[data-design="standard"] .field input:focus, html[data-design="standard"] .f
 html[data-design="standard"] .detail-cover, html[data-design="standard"] .edit-side .detail-cover { border: 1px solid var(--line) !important; box-shadow: none !important; }
 html[data-design="standard"] .sheet-inner { background: transparent !important; }
 html[data-design="standard"] .sheet-card { box-shadow: inset 0 0 0 1px var(--line-strong) !important; }
-html[data-design="standard"] [class*="picker"] button, html[data-design="standard"] .pick-trigger, html[data-design="standard"] .dd-trigger, html[data-design="standard"] .cal-trigger { border-width: 1px !important; }
 
 /* ---- подборки: язычок стоит на крае папки, с вогнутыми «плечиками» ---- */
 /* Язычок заходит на 1px в папку и закрывает её верхнюю линию; плечико — уголок
@@ -172,14 +173,12 @@ html[data-design="standard"] .footer-word, html[data-design="standard"] .folder-
   font-family: 'Lora', Georgia, serif !important; font-weight: 400 !important; letter-spacing: -.01em !important; }
 
 /* рукописные подписи в окнах записи и подборки — как «выбрано N» */
-html[data-design="standard"] .hand-note { display: inline !important; color: var(--ink-2) !important; }
+html[data-design="standard"] .hand-note { color: var(--ink-2) !important; }
 
 /* контурные фигуры: тонко и светло */
-html[data-design="standard"] .folder-figure, html[data-design="standard"] .title-deco, html[data-design="standard"] .stat-fig, html[data-design="standard"] .coll-figure, html[data-design="standard"] .empty > svg { display: block !important; }
 html[data-design="standard"] .fig-outline { opacity: .38; }
 html[data-design="standard"] .stat-fig { width: 92px; right: -14px; bottom: -16px; }
 html[data-design="standard"] .coll-figure .fig-outline { opacity: .3; }
-html[data-design="standard"] .doodle { display: none !important; }
 html[data-design="standard"] .empty > svg { margin: 0 auto; }
 
 /* наведение на плитки статистики и стикер подборок */
