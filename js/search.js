@@ -106,14 +106,14 @@ window.Diary = window.Diary || {};
       : 'По запросу «' + q + '» — ' + all.length + ' ' + utils.plural(all.length, ['запись', 'записи', 'записей']) +
         (cols.length ? ' и ' + cols.length + ' ' + utils.plural(cols.length, ['подборка', 'подборки', 'подборок']) : '');
 
-    var tabs = [['all', 'Все', 'rgba(255, 255, 255, .55)', all.length]].concat(Diary.CATEGORIES.map(function (c) {
+    var tabs = [['all', 'Все', 'var(--ink)', all.length]].concat(Diary.CATEGORIES.map(function (c) {
       return [c, Diary.CATEGORY_LABEL_PLURAL[c], Diary.THEME[c].c, all.filter(function (e) { return e.category === c; }).length, Diary.THEME[c].fi];
     }));
     if (category !== 'all' && !all.some(function (e) { return e.category === category; })) category = 'all';
     app.querySelector('[data-search-tabs]').innerHTML = tabs.map(function (t, i) {
       var on = category === t[0];
       var fi = t[4] && !on ? ';color:' + t[4] : '';
-      return '<button type="button" class="stab' + (on ? ' is-active' : '') + '" data-search-cat="' + t[0] + '"' +
+      return '<button type="button" class="stab' + (t[0] === 'all' ? ' stab--all' : '') + (on ? ' is-active' : '') + '" data-search-cat="' + t[0] + '"' +
         (t[3] || t[0] === 'all' ? '' : ' disabled') +
         ' style="--sc:' + t[2] + fi + ';z-index:' + (on ? 6 : 5 - i) + '" aria-pressed="' + on + '">' +
         esc(t[1]) + '<span class="count">' + t[3] + '</span></button>';

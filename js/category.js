@@ -89,13 +89,13 @@ window.Diary = window.Diary || {};
 
     app.querySelector('[data-sub]').textContent = subtitle(all, cat);
 
-    var tabs = [['all', 'Все', 'rgba(255, 255, 255, .55)']].concat(Diary.STATUS_KEYS.map(function (k) {
+    var tabs = [['all', 'Все', 'var(--ink)']].concat(Diary.STATUS_KEYS.map(function (k) {
       return [k, Diary.STATUS_LABEL[cat][k], Diary.STATUS_COLOR[k]];
     }));
     app.querySelector('[data-status-tabs]').innerHTML = tabs.map(function (tab, i) {
       var n = tab[0] === 'all' ? all.length : all.filter(function (e) { return e.status === tab[0]; }).length;
       var on = f.status === tab[0];
-      return '<button type="button" class="stab' + (on ? ' is-active' : '') + '" data-status="' + tab[0] + '" style="--sc:' + tab[2] + ';z-index:' + (on ? 6 : 5 - i) + '" aria-pressed="' + on + '">' +
+      return '<button type="button" class="stab' + (tab[0] === 'all' ? ' stab--all' : '') + (on ? ' is-active' : '') + '" data-status="' + tab[0] + '" style="--sc:' + tab[2] + ';z-index:' + (on ? 6 : 5 - i) + '" aria-pressed="' + on + '">' +
         esc(tab[1]) + '<span class="count">' + n + '</span></button>';
     }).join('');
 

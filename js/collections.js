@@ -16,6 +16,10 @@ window.Diary = window.Diary || {};
   var pickerOpen = false;
   var formOpen = false;
 
+  // Где у папки-подборки язычок: слева, ближе к середине, справа. Правый крепится
+  // от края, чтобы плечико не вылезало за папку при любой ширине.
+  var PACK_TAB_POS = ['--tab-left:22px', '--tab-left:34%', '--tab-left:auto;--tab-right:22px'];
+
   // Цвета папок-подборок идут по кругу.
   var PACK_COLORS = [
     ['#EC1864', '#FFFFFF'], ['#FFC43D', '#1C1B3A'], ['#6077D4', '#FFFFFF'],
@@ -64,7 +68,7 @@ window.Diary = window.Diary || {};
       ? entries.slice(0, THUMB_LIMIT).map(R.thumbHtml).join('')
       : '<span class="folder-empty">пока пусто</span>';
     return '' +
-      '<button type="button" class="pack" data-col="' + col.id + '" style="--c:' + c[0] + ';--fi:' + c[1] + ';--tab-left:' + (18 + (i % 3) * 22) + '%">' +
+      '<button type="button" class="pack" data-col="' + col.id + '" style="--c:' + c[0] + ';--fi:' + c[1] + ';' + PACK_TAB_POS[i % 3] + '">' +
       '<span class="pack-tab">' + countText(entries.length) + '</span>' +
       '<span class="pack-body">' +
       '<span class="pack-name">' + esc(col.name) + '</span>' +

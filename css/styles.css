@@ -433,6 +433,9 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .stab:hover { transform: translateY(3px); }
 .stab .count { font: 500 12px var(--mono); margin-left: 8px; opacity: .6; }
 .stab.is-active { --tc: var(--cream); transform: none; padding-bottom: 16px; box-shadow: none; }
+/* «Все» в неактивном состоянии — тёмный, чтобы не сливаться с белым активным */
+.stab--all:not(.is-active) { color: var(--cream); }
+.stab--all:not(.is-active) .count { opacity: .75; }
 .stab.is-active::before, .stab.is-active::after {
   content: ""; position: absolute; bottom: 0;
   width: var(--r); height: var(--r);
@@ -705,7 +708,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .pack:hover { transform: translateY(-6px) rotate(-1deg); }
 .pack:nth-child(even):hover { transform: translateY(-6px) rotate(1deg); }
 .pack-tab {
-  position: absolute; bottom: calc(100% - 1px); left: var(--tab-left, 18%);
+  position: absolute; bottom: calc(100% - 1px); left: var(--tab-left, 22px); right: var(--tab-right, auto);
   background: var(--tc);
   padding: 9px 16px 7px;
   border-radius: 14px 14px 0 0;
