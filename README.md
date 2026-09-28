@@ -23,7 +23,7 @@
 |---|---|
 | Константы и помощники | `constants.js` (категории, статусы, жанры, цвета папок и страниц), `design.js` (переключение дизайнов), `utils.js`, `dialog.js` (окно подтверждения) |
 | Данные | `storage.js` (адаптер localStorage), `repository.js` (записи, корзина, заметки, цитаты), `collections-repository.js` (подборки), `demo-data.js` |
-| Каталоги | `providers.js`, `provider-google-books.js`, `provider-kinopoisk.js`, `provider-rawg.js` (`provider-tmdb.js` остался в папке, но не подключён — см. `docs/context.md`) |
+| Каталоги | `providers.js`, `provider-google-books.js`, `provider-kinopoisk.js`, `provider-rawg.js` |
 | Интерфейс | `covers.js` (генератор обложек и фигур), `stars.js` (оценка с половинками), `pickers.js` (свои выпадающий список и календарь вместо нативных), `render.js` (карточки, фильтры, сортировка), `home.js` (полка папок и подборок), `category.js` (страница папки и язычки папок справа), `collections.js` (страница подборок), `trash.js` (корзина), `search.js` (результаты поиска), `about.js` (о приложении), `footer.js` (футер и переключатель дизайна), `modal.js` (просмотр и редактирование записи), `collection-modal.js` (окно подборки: название, состав, сохранение) |
 | Резервные копии | `backup.js` (выгрузка и загрузка файла с записями и подборками, слияние по `id`) |
 | Запуск | `state.js` (фильтры и текущая страница), `app.js` (маршруты, разделы в шапке, поиск в шапке, кнопка корзины) |

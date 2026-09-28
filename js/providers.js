@@ -1,7 +1,6 @@
-// Search-provider interface for future catalog lookups (Google Books, IMDb,
-// Kinopoisk). Not wired into the UI yet — this only fixes the shape so that
-// hooking up a real API later doesn't require touching the entry schema or
-// the modal code, just registering an adapter here.
+// Search-provider interface for catalog lookups (Google Books, Kinopoisk,
+// RAWG). Fixes the shape so that hooking up another API doesn't require
+// touching the entry schema or the modal code, just registering an adapter here.
 //
 // A provider is an object: { id: string, categories: string[],
 //   search: function(query, category) -> Promise<Array<{ title, cover, author,
@@ -19,7 +18,7 @@
 // The modal calls it after the user picks a result, not on every keystroke.
 //
 // `category` is passed because one provider can serve several of them and may
-// need different endpoints per category (TMDB: movie vs tv).
+// need different endpoints per category (Kinopoisk keeps films and series in one search and filters by type).
 //
 // Entries already carry an optional `source` field
 // ({ provider, externalId, url }) reserved for whichever result the user

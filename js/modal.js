@@ -278,7 +278,7 @@ window.Diary = window.Diary || {};
     modalEl.querySelector('#removeCoverBtn').hidden = !coverData;
   }
 
-  // ---- catalog lookup (Google Books, TMDB, RAWG) ----
+  // ---- catalog lookup (Google Books, Kinopoisk, RAWG) ----
 
   // The lookup row only appears for categories that actually have a provider
   // registered, so adding more providers later needs no change here.
