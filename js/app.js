@@ -15,9 +15,13 @@ window.Diary = window.Diary || {};
 
   function isCategory(tab) { return Diary.CATEGORIES.indexOf(tab) !== -1; }
 
+  // Параметры из адреса вида #/search?q=… — нужны странице поиска.
+  var hashParams = new URLSearchParams('');
+
   function tabFromHash() {
-    var tab = (window.location.hash || '').replace(/^#\/?/, '');
-    return Diary.TABS.indexOf(tab) !== -1 ? tab : 'home';
+    var parts = (window.location.hash || '').replace(/^#\/?/, '').split('?');
+    hashParams = new URLSearchParams(parts[1] || '');
+    return Diary.TABS.indexOf(parts[0]) !== -1 ? parts[0] : 'home';
   }
 
   // Цвет страницы: кремовый на главной, цвет папки внутри категории.
@@ -43,12 +47,15 @@ window.Diary = window.Diary || {};
     else if (tab === 'collections') Diary.collections.render(app);
     else if (tab === 'trash') Diary.trash.render(app);
     else if (tab === 'about') Diary.about.render(app);
+    else if (tab === 'search') Diary.search.render(app, opts && opts.full ? hashParams : null, opts);
   }
 
   function switchTab(tab) {
     if (state.currentTab === 'collections' && tab !== 'collections') Diary.collections.reset();
     state.currentTab = tab;
     Diary.category.unmount();
+    Diary.search.unmount();
+    if (tab !== 'search') document.getElementById('globalSearchInput').value = '';
     applyPageTheme(tab);
     renderCurrentTab({ full: true });
     updateNav();
@@ -67,7 +74,8 @@ window.Diary = window.Diary || {};
 
   // Активный раздел в шапке. Страницы категорий и корзина относятся к «Все фиксы».
   function updateNav() {
-    var section = state.currentTab === 'collections' || state.currentTab === 'about' ? state.currentTab : 'home';
+    var tab = state.currentTab;
+    var section = tab === 'collections' || tab === 'about' ? tab : tab === 'search' ? null : 'home';
     Array.prototype.forEach.call(document.querySelectorAll('[data-nav]'), function (a) {
       var on = a.getAttribute('data-nav') === section;
       a.classList.toggle('is-active', on);
@@ -106,15 +114,28 @@ window.Diary = window.Diary || {};
             '</button>';
         }).join('')
         : '<p class="result-empty">Ничего не нашлось</p>';
+      var total = repo.getActive().filter(function (e) { return Diary.render.matchesQuery(e, q); }).length;
+      results.innerHTML += '<button type="button" class="result result--all" data-search-all>' +
+        (total ? 'Все результаты — ' + total + ' ' + utils.plural(total, ['запись', 'записи', 'записей']) : 'Открыть поиск') +
+        ' <span aria-hidden="true">→</span></button>';
       results.hidden = false;
     }, 120));
 
     input.addEventListener('keydown', function (ev) {
+      // Enter — страница со всеми результатами; подсказки открываются кликом.
       if (ev.key === 'Enter') {
-        var first = results.querySelector('[data-open]');
-        if (first) first.click();
+        ev.preventDefault();
+        hide();
+        input.blur();
+        Diary.search.go(input.value);
       }
       if (ev.key === 'Escape') hide();
+    });
+
+    results.addEventListener('click', function (ev) {
+      if (!ev.target.closest('[data-search-all]')) return;
+      hide();
+      Diary.search.go(input.value);
     });
 
     document.addEventListener('click', function (ev) {
@@ -136,6 +157,7 @@ window.Diary = window.Diary || {};
     Diary.category.setup(app);
     Diary.collections.setup(app);
     Diary.trash.setup(app);
+    Diary.search.setup(app);
     Diary.footer.setup();
     Diary.modal.setup();
     setupGlobalSearch();

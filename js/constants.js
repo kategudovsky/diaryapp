@@ -65,7 +65,8 @@ window.Diary = window.Diary || {};
   Diary.PAGE_THEME = {
     collections: { c: '#6077D4', fi: '#FFFFFF', grid: 'rgba(255, 255, 255,.14)' },
     trash:       { c: '#B79CF2', fi: '#1C1B3A', grid: 'rgba(28, 27, 58,.08)' },
-    about:       { c: '#FFC43D', fi: '#1C1B3A', grid: 'rgba(28, 27, 58,.08)' }
+    about:       { c: '#FFC43D', fi: '#1C1B3A', grid: 'rgba(28, 27, 58,.08)' },
+    search:      { c: '#DAF5F9', fi: '#1C1B3A', grid: 'rgba(96, 119, 212, .15)' }
   };
 
   Diary.STATUS_COLOR = { planned: '#FFC43D', done: '#DAF5F9' };
