@@ -22,15 +22,17 @@ window.Diary = window.Diary || {};
 
   // Цвет страницы: кремовый на главной, цвет папки внутри категории.
   function applyPageTheme(tab) {
-    var body = document.body;
+    // Переменные ставим на <html>, а не на <body>: полоса прокрутки страницы
+    // принадлежит корню документа и берёт цвета оттуда.
+    var root = document.documentElement;
     var t = isCategory(tab) ? Diary.THEME[tab] : Diary.PAGE_THEME[tab];
-    body.dataset.view = tab === 'home' ? 'home' : 'collection';
+    document.body.dataset.view = tab === 'home' ? 'home' : 'collection';
     if (t) {
-      body.style.setProperty('--page', t.c);
-      body.style.setProperty('--grid', t.grid);
-      body.style.setProperty('--page-fi', t.fi);
+      root.style.setProperty('--page', t.c);
+      root.style.setProperty('--grid', t.grid);
+      root.style.setProperty('--page-fi', t.fi);
     } else {
-      ['--page', '--grid', '--page-fi'].forEach(function (p) { body.style.removeProperty(p); });
+      ['--page', '--grid', '--page-fi'].forEach(function (p) { root.style.removeProperty(p); });
     }
   }
 

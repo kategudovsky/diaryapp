@@ -71,6 +71,31 @@ body::after {
 
 body.has-modal { overflow: hidden; }
 
+/* ============ Полосы прокрутки ============ */
+/* Бегунок — «таблетка» цвета текста страницы, дорожка — цвет фона под ней.
+   Chrome и Safari берут ::-webkit-scrollbar, Firefox — scrollbar-color. */
+:root { --sb-thumb: var(--page-fi, var(--ink)); --sb-track: var(--page); }
+::-webkit-scrollbar { width: 14px; height: 14px; }
+::-webkit-scrollbar-track { background: var(--sb-track); }
+::-webkit-scrollbar-thumb {
+  background: var(--sb-thumb);
+  border: 4px solid var(--sb-track);
+  border-radius: 999px;
+}
+::-webkit-scrollbar-thumb:hover { border-width: 3px; }
+::-webkit-scrollbar-corner { background: var(--sb-track); }
+@supports (-moz-appearance: none) {
+  html { scrollbar-color: var(--sb-thumb) var(--sb-track); }
+  .modal, .picker-list, .lookup-results, .search-results, .field .notes { scrollbar-color: var(--sb-thumb) var(--sb-track); scrollbar-width: thin; }
+}
+/* внутренние списки — на белом фоне */
+.picker-list, .lookup-results, .search-results { --sb-thumb: var(--ink); --sb-track: #FFFFFF; }
+.picker-list::-webkit-scrollbar, .lookup-results::-webkit-scrollbar, .search-results::-webkit-scrollbar { width: 12px; }
+.field .notes { --sb-thumb: var(--ink); --sb-track: #FFFFFF; }
+/* модальное окно прокручивается поверх затемнения */
+.modal { --sb-thumb: rgba(255, 255, 255, .85); --sb-track: transparent; }
+.modal::-webkit-scrollbar-thumb { border-color: transparent; background-clip: padding-box; }
+
 a { color: inherit; }
 button, input, select, textarea { font: inherit; color: inherit; }
 :focus-visible { outline: 3px solid var(--violet); outline-offset: 3px; border-radius: 8px; }
