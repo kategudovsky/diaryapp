@@ -38,6 +38,8 @@ window.Diary = window.Diary || {};
   function titleSheetHtml(active) {
     var collections = Diary.collectionsRepo.getAll().length;
     var planned = active.filter(function (e) { return e.status === 'planned'; }).length;
+    // Заброшенное — отдельная строка, не прибавляется ни к завершённому, ни к планам.
+    var dropped = active.filter(function (e) { return e.status === 'dropped'; }).length;
 
     return '' +
       '<article class="folder folder--title" style="--c:#FFFFFF;--fi:#1C1B3A;z-index:10">' +
@@ -46,7 +48,7 @@ window.Diary = window.Diary || {};
       '<div class="mono">FILE_00 // идея фикс · ' + YEAR + '</div>' +
       '<div class="title-row">' +
       '<h1>фикс</h1>' +
-      '<span class="title-deco" aria-hidden="true">' + Diary.covers.figure('series', '#FFC43D') + Diary.covers.figure('movie', '#B79CF2') + '</span>' +
+      '<span class="title-deco" aria-hidden="true">' + Diary.covers.figure('series', '#FFE066') + Diary.covers.figure('movie', '#B79CF2') + '</span>' +
       '</div>' +
       '<p class="decode">' + Diary.CATEGORIES.map(function (cat) {
         var label = Diary.CATEGORY_LABEL_PLURAL[cat];
@@ -57,9 +59,12 @@ window.Diary = window.Diary || {};
       Diary.CATEGORIES.map(function (cat) { return statTileHtml(cat, active); }).join('') +
       '</section>' +
       '<div class="stats">' +
-      '<span class="sticker" style="--s:#FFC43D">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
-      '<span class="sticker" style="--s:#B79CF2">' + doneThisYear(active) + ' завершено за ' + YEAR + '</span>' +
-      '<span class="sticker" style="--s:#DAF5F9">' + planned + ' в планах</span>' +
+      // Стикеры красим цветами статусов: завершённое зелёным, планы голубым,
+      // заброшенное тёмным — чтобы на главной и в папке они читались одинаково.
+      '<span class="sticker" style="--s:#FFE066">' + active.length + ' ' + utils.plural(active.length, ['запись', 'записи', 'записей']) + '</span>' +
+      '<span class="sticker" style="--s:' + Diary.STATUS_COLOR.done + '">' + doneThisYear(active) + ' завершено за ' + YEAR + '</span>' +
+      '<span class="sticker" style="--s:' + Diary.STATUS_COLOR.planned + '">' + planned + ' в планах</span>' +
+      (dropped ? '<span class="sticker" style="--s:' + Diary.STATUS_COLOR.dropped + ';color:' + Diary.STATUS_INK.dropped + '">' + dropped + ' заброшено</span>' : '') +
       '<a class="sticker sticker--link" href="#/collections" style="--s:#6077D4;color:#FFFFFF">' + collections + ' ' + utils.plural(collections, ['подборка', 'подборки', 'подборок']) + ' →</a>' +
       '</div>' +
       '</div>' +

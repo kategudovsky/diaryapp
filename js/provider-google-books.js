@@ -30,6 +30,7 @@ window.Diary = window.Diary || {};
     return {
       title: info.title || '',
       author: (info.authors || []).join(', '),
+      description: info.description || '',
       cover: cleanCoverUrl(links.thumbnail || links.smallThumbnail),
       year: (info.publishedDate || '').slice(0, 4),
       externalId: item.id,

@@ -12,9 +12,8 @@ window.Diary = window.Diary || {};
   var esc = utils.escapeHtml;
   var R = Diary.render;
 
-  var openId = null; // id of the collection currently open in detail view
-  var pickerOpen = false;
-  var formOpen = false;
+  var openId = null;      // id of the collection currently open in detail view
+  var pendingNew = false; // «собрать новую» попросили с другой страницы
 
   // Где у папки-подборки язычок: слева, ближе к середине, справа. Отступ от края —
   // не меньше скругления папки (22px) плюс плечико (14px), иначе плечико висит над углом.
@@ -22,7 +21,7 @@ window.Diary = window.Diary || {};
 
   // Цвета папок-подборок идут по кругу.
   var PACK_COLORS = [
-    ['#EC1864', '#FFFFFF'], ['#FFC43D', '#1C1B3A'], ['#6077D4', '#FFFFFF'],
+    ['#EC1864', '#FFFFFF'], ['#FFE066', '#1C1B3A'], ['#6077D4', '#FFFFFF'],
     ['#B79CF2', '#1C1B3A'], ['#DAF5F9', '#1C1B3A']
   ];
 
@@ -38,7 +37,7 @@ window.Diary = window.Diary || {};
 
   function pageVars() {
     var t = Diary.PAGE_THEME.collections;
-    return '--c:' + t.c + ';--fi:' + t.fi + ';--m:#FFC43D';
+    return '--c:' + t.c + ';--fi:' + t.fi + ';--m:#FFE066';
   }
 
   function headHtml(opts) {
@@ -50,7 +49,7 @@ window.Diary = window.Diary || {};
       '<h1>' + esc(opts.title) + '</h1>' +
       '<p class="coll-sub">' + esc(opts.sub) + '</p>' +
       '</div>' +
-      '<div class="coll-figure coll-figure--still">' + Diary.covers.figure('collections', '#FFC43D') +
+      '<div class="coll-figure coll-figure--still">' + Diary.covers.figure('collections', '#EC1864') +
       '<svg class="doodle" viewBox="0 0 60 60" aria-hidden="true">' + Diary.covers.sparkle(30, 30, 26, 'currentColor') + '</svg></div>' +
       '</div>' +
       '<div class="coll-tools">' + opts.tools + '</div>' +
@@ -81,7 +80,8 @@ window.Diary = window.Diary || {};
     var collections = collRepo.getAll();
     var body = collections.length === 0
       ? '<div class="empty">' + Diary.covers.figure('collections', '#EC1864') + '<p>Пока нет подборок</p>' +
-        '<span class="empty-hint">Создайте первую, чтобы собрать тематическую коллекцию из всего, что у вас есть.</span></div>'
+        '<span class="empty-hint">Соберите первую — в неё можно сложить что угодно из любых папок.</span>' +
+        '<button type="button" class="btn" data-col-new>+ Собрать первую</button></div>'
       : '<div class="packs">' + collections.map(packHtml).join('') + '</div>';
 
     app.innerHTML = '' +
@@ -90,38 +90,13 @@ window.Diary = window.Diary || {};
         code: 'SET_00 // подборки',
         title: 'Подборки',
         sub: collections.length + ' ' + utils.plural(collections.length, ['подборка', 'подборки', 'подборок']) + ' · записи из любых папок',
-        tools: '<button type="button" class="btn" data-col-new>+ Создать подборку</button>' +
-          '<form class="inline-form" data-col-form' + (formOpen ? '' : ' hidden') + '>' +
-          '<input type="text" name="name" placeholder="Название подборки…" aria-label="Название подборки" autocomplete="off">' +
-          '<button type="submit" class="btn btn--ink">Создать</button>' +
-          '</form>'
+        tools: '<button type="button" class="btn" data-col-new>+ Создать подборку</button>'
       }) +
       '<div class="sheet sheet--flat">' + body + '</div>' +
       '</section>';
-
-    if (formOpen) app.querySelector('[data-col-form] input').focus();
   }
 
   // ==================== DETAIL ====================
-
-  function pickerHtml(col) {
-    var all = repo.getActive();
-    if (all.length === 0) {
-      return '<p class="picker-empty">В хранилище пока нет записей.</p>';
-    }
-    return '<div class="picker"><div class="picker-head"><b>Что положить в подборку</b><span>отметьте записи</span></div>' +
-      '<div class="picker-list">' + all.map(function (e) {
-        var checked = col.entryIds.indexOf(e.id) !== -1 ? ' checked' : '';
-        var t = Diary.THEME[e.category];
-        return '<label class="picker-row">' +
-          '<input type="checkbox" data-pick="' + e.id + '"' + checked + '>' +
-          '<span class="picker-check" aria-hidden="true"></span>' +
-          R.tinyThumbHtml(e) +
-          '<span class="picker-row-title">' + esc(e.title) + '</span>' +
-          '<span class="result-type" style="--c:' + t.c + ';--fi:' + t.fi + '">' + esc(Diary.CATEGORY_LABEL[e.category]) + '</span>' +
-          '</label>';
-      }).join('') + '</div></div>';
-  }
 
   function renderDetail(app, col) {
     var entries = liveEntries(col.entryIds);
@@ -131,7 +106,9 @@ window.Diary = window.Diary || {};
           '<button type="button" class="collection-remove" data-remove="' + e.id + '" title="Убрать из подборки" aria-label="Убрать «' + esc(e.title) + '» из подборки">×</button>' +
           '</div>';
       }).join('') + '</div>'
-      : '<div class="empty">' + Diary.covers.figure('collections', '#EC1864') + '<p>Подборка пуста</p><span class="empty-hint">Добавьте записи из вашего хранилища.</span></div>';
+      : '<div class="empty">' + Diary.covers.figure('collections', '#EC1864') + '<p>Подборка пуста</p>' +
+        '<span class="empty-hint">Положите в неё что-нибудь из дневника.</span>' +
+        '<button type="button" class="btn" data-col-edit>+ Добавить записи</button></div>';
 
     app.innerHTML = '' +
       '<section class="coll" style="' + pageVars() + '">' +
@@ -139,10 +116,9 @@ window.Diary = window.Diary || {};
         code: 'SET // подборка',
         title: col.name,
         sub: countText(entries.length),
-        tools: '<button type="button" class="btn" data-col-pick aria-expanded="' + pickerOpen + '">' + (pickerOpen ? 'Готово' : '+ Добавить записи') + '</button>' +
-          '<button type="button" class="btn btn--ghost" data-col-delete>Удалить подборку</button>'
+        tools: '<button type="button" class="btn" data-col-edit>Изменить подборку</button>'
       }) +
-      '<div class="sheet sheet--flat">' + (pickerOpen ? pickerHtml(col) : '') + gridHtml + '</div>' +
+      '<div class="sheet sheet--flat">' + gridHtml + '</div>' +
       '</section>';
   }
 
@@ -157,19 +133,13 @@ window.Diary = window.Diary || {};
       if (Diary.state.currentTab !== 'collections') return;
       var t = ev.target;
 
-      if (t.closest('[data-col-new]')) { formOpen = !formOpen; render(app); return; }
+      if (t.closest('[data-col-new]')) { Diary.collectionModal.open(null); return; }
       var pack = t.closest('[data-col]');
-      if (pack) { openId = pack.getAttribute('data-col'); pickerOpen = false; render(app); window.scrollTo(0, 0); return; }
-      if (t.closest('[data-col-pick]')) { pickerOpen = !pickerOpen; render(app); return; }
+      if (pack) { openId = pack.getAttribute('data-col'); render(app); window.scrollTo(0, 0); return; }
 
       var col = current();
-      if (t.closest('[data-col-delete]') && col) {
-        if (!confirm('Удалить подборку «' + col.name + '»? Сами записи останутся в дневнике.')) return;
-        collRepo.remove(col.id);
-        openId = null;
-        render(app);
-        return;
-      }
+      if (t.closest('[data-col-edit]') && col) { Diary.collectionModal.open(col.id); return; }
+
       var removeBtn = t.closest('[data-remove]');
       if (removeBtn && col) { collRepo.removeEntry(col.id, removeBtn.getAttribute('data-remove')); render(app); return; }
 
@@ -177,31 +147,6 @@ window.Diary = window.Diary || {};
       if (card) Diary.modal.openEntry(card.getAttribute('data-id'));
     });
 
-    app.addEventListener('change', function (ev) {
-      if (Diary.state.currentTab !== 'collections') return;
-      var box = ev.target.closest('[data-pick]');
-      var col = current();
-      if (!box || !col) return;
-      var id = box.getAttribute('data-pick');
-      var scroll = app.querySelector('.picker-list') ? app.querySelector('.picker-list').scrollTop : 0;
-      if (box.checked) collRepo.addEntry(col.id, id);
-      else collRepo.removeEntry(col.id, id);
-      render(app);
-      var list = app.querySelector('.picker-list');
-      if (list) list.scrollTop = scroll;
-    });
-
-    app.addEventListener('submit', function (ev) {
-      if (!ev.target.matches('[data-col-form]')) return;
-      ev.preventDefault();
-      var input = ev.target.querySelector('input');
-      if (!input.value.trim()) return;
-      var created = collRepo.add(input.value);
-      formOpen = false;
-      openId = created.id;
-      pickerOpen = true;
-      render(app);
-    });
   }
 
   function render(app) {
@@ -212,22 +157,27 @@ window.Diary = window.Diary || {};
       openId = null;
       renderOverview(app);
     }
+    if (pendingNew) {
+      pendingNew = false;
+      Diary.collectionModal.open(null);
+    }
   }
 
   // При уходе со страницы возвращаемся к списку подборок.
-  function reset() { openId = null; pickerOpen = false; formOpen = false; }
+  function reset() { openId = null; pendingNew = false; }
 
   // Открыть подборку с другой страницы (например, с полки на главной).
   function open(id) {
     openId = id;
-    pickerOpen = false;
     Diary.goToTab('collections');
   }
 
-  // Открыть страницу подборок сразу с полем для новой.
+  // Новая подборка с другой страницы. Окно открывается не здесь, а после
+  // отрисовки раздела: переход через адресную строку случается не сразу,
+  // и открытое до него окно тут же закрылось бы сменой страницы.
   function create() {
     openId = null;
-    formOpen = true;
+    pendingNew = true;
     Diary.goToTab('collections');
   }
 

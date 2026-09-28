@@ -24,10 +24,14 @@ window.Diary = window.Diary || {};
   // ---- edit-mode working state ----
   var selectedCategory = 'movie';
   var selectedGenres = [];
-  var selectedStatus = 'planned';
+  // null — статус ещё не выбран: у новой записи ни одна кнопка не нажата,
+  // пользователь выбирает сам. Сохранить без статуса форма не даёт.
+  var selectedStatus = null;
   var selectedDateType = 'unknown';
   var coverData = null;
   var ratingPicker = null;
+  var exactPicker = null;   // календарь точной даты
+  var monthPicker = null;   // список месяцев у примерной
   // Comments/quotes typed in before a brand-new entry has been saved (and
   // thus has no id yet); folded into the entry itself on first save.
   var draftComments = [];
@@ -79,13 +83,14 @@ window.Diary = window.Diary || {};
       '<div class="detail-info">' +
       '<div class="chips">' +
       '<span class="chip chip--static chip--cat">' + esc(Diary.CATEGORY_LABEL[entry.category]) + '</span>' +
-      '<span class="chip chip--static is-on" style="--sc:' + Diary.STATUS_COLOR[entry.status] + '">' + esc(R.statusLabel(entry)) + '</span>' +
+      '<span class="chip chip--static is-on" style="' + R.statusStyle(entry.status) + '">' + esc(R.statusLabel(entry)) + '</span>' +
       '</div>' +
       '<h2>' + esc(entry.title) + '</h2>' +
       (entry.category === 'book' && entry.author ? '<p class="detail-sub">' + esc(entry.author) + '</p>' : '') +
       (genres.length ? '<div class="tags">' + genres.map(function (g, i) {
         return '<span class="tag tag--static" style="--tc:' + TAG_COLORS[i % TAG_COLORS.length] + '">' + esc(g) + '</span>';
       }).join('') + '</div>' : '') +
+      (entry.description ? '<p class="detail-desc">' + esc(entry.description) + '</p>' : '') +
       '<div class="detail-grid">' +
       (entry.rating > 0 ? '<div class="field"><span class="label">Оценка</span>' + Diary.stars.staticStarsHtml(entry.rating, 28) + '</div>' : '') +
       '<div class="field"><span class="label">Когда</span><span class="detail-value">' + esc(dateBadge) + '</span></div>' +
@@ -111,7 +116,7 @@ window.Diary = window.Diary || {};
     modalEl.querySelector('#editBtn').focus({ preventScroll: true });
   }
 
-  var TAG_COLORS = ['#FFC43D', '#B79CF2', '#DAF5F9'];
+  var TAG_COLORS = ['#FFE066', '#B79CF2', '#DAF5F9'];
 
   // ==================== EDIT MODE ====================
 
@@ -120,11 +125,6 @@ window.Diary = window.Diary || {};
       var t = Diary.THEME[cat];
       return '<button type="button" class="chip chip--type" data-category="' + cat + '" style="--c:' + t.c + ';--fi:' + t.fi + '">' + esc(Diary.CATEGORY_LABEL[cat]) + '</button>';
     }).join('');
-
-    var monthOptions = '<option value="">Месяц (необязательно)</option>' +
-      Diary.MONTHS_RU.map(function (m, i) {
-        return '<option value="' + (i + 1) + '">' + esc(m) + '</option>';
-      }).join('');
 
     modalEl.innerHTML = '' +
       '<div class="sheet-tab">' + (editingId ? 'EDIT // редактирование' : 'NEW // новая запись') + '</div>' +
@@ -166,14 +166,19 @@ window.Diary = window.Diary || {};
       '<input type="text" id="f_author">' +
       '</div>' +
       '<div class="field">' +
-      '<span class="label">Статус</span>' +
+      '<label class="label" for="f_description">Описание</label>' +
+      '<textarea id="f_description" rows="3" placeholder="Коротко о чём это — подтянется из каталога вместе с обложкой"></textarea>' +
+      '</div>' +
+      '<div class="field">' +
+      '<span class="label">Статус <span class="field-hint" id="statusHint" hidden>выберите один</span></span>' +
       '<div class="chips" id="statusPicker" role="group" aria-label="Статус"></div>' +
       '</div>' +
       '<div class="field">' +
       '<span class="label">Жанр</span>' +
       '<div class="chips chips--small" id="genrePicker" role="group" aria-label="Жанр"></div>' +
       '</div>' +
-      '<div class="field">' +
+      // Блок даты показывается только у завершённого — см. syncDateVisibility().
+      '<div class="field" id="dateField">' +
       '<span class="label">Дата</span>' +
       '<div class="chips chips--small" id="dateTypePicker" role="group" aria-label="Тип даты">' +
       '<button type="button" class="chip" data-datetype="exact" style="--sc:#DAF5F9">Точная</button>' +
@@ -181,11 +186,11 @@ window.Diary = window.Diary || {};
       '<button type="button" class="chip" data-datetype="unknown" style="--sc:#DAF5F9">Без даты</button>' +
       '</div>' +
       '<div class="date-inputs" id="dateInputsExact">' +
-      '<input type="date" id="f_date_exact" aria-label="Дата">' +
+      '<div id="dateExactPicker"></div>' +
       '</div>' +
       '<div class="date-inputs" id="dateInputsApprox">' +
       '<input type="number" id="f_date_year" placeholder="Год" min="1800" max="2100" aria-label="Год">' +
-      '<label class="select"><select id="f_date_month" aria-label="Месяц">' + monthOptions + '</select></label>' +
+      '<div id="dateMonthPicker"></div>' +
       '</div>' +
       '</div>' +
       '</div>' + // end edit-main
@@ -194,12 +199,12 @@ window.Diary = window.Diary || {};
       '<div class="field">' +
       '<span class="label">Комментарии</span>' +
       '<div class="notes-list" id="commentsList"></div>' +
-      '<div class="add-row"><input type="text" id="newCommentInput" placeholder="Что запомнилось?" aria-label="Новый комментарий"><button type="button" class="btn btn--small" id="addCommentBtn">Добавить</button></div>' +
+      '<div class="add-row"><textarea id="newCommentInput" rows="3" placeholder="Что запомнилось?" aria-label="Новый комментарий"></textarea><button type="button" class="btn btn--small" id="addCommentBtn">+ Добавить комментарий</button></div>' +
       '</div>' +
       '<div class="field">' +
       '<span class="label">Цитаты</span>' +
       '<div class="notes-list" id="quotesList"></div>' +
-      '<div class="add-row"><input type="text" id="newQuoteInput" placeholder="Любимая фраза" aria-label="Новая цитата"><button type="button" class="btn btn--small" id="addQuoteBtn">Добавить</button></div>' +
+      '<div class="add-row"><textarea id="newQuoteInput" rows="3" placeholder="Любимая фраза" aria-label="Новая цитата"></textarea><button type="button" class="btn btn--small" id="addQuoteBtn">+ Добавить ещё цитату</button></div>' +
       '</div>' +
       '</div>' +
 
@@ -226,7 +231,7 @@ window.Diary = window.Diary || {};
     var picker = modalEl.querySelector('#genrePicker');
     picker.innerHTML = list.map(function (g) {
       var on = selectedGenres.indexOf(g) !== -1;
-      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:#FFC43D" data-genre="' + esc(g) + '" aria-pressed="' + on + '">' + esc(g) + '</button>';
+      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:#FFE066" data-genre="' + esc(g) + '" aria-pressed="' + on + '">' + esc(g) + '</button>';
     }).join('');
   }
 
@@ -235,8 +240,19 @@ window.Diary = window.Diary || {};
     var picker = modalEl.querySelector('#statusPicker');
     picker.innerHTML = Diary.STATUS_KEYS.map(function (key) {
       var on = key === selectedStatus;
-      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="--sc:' + Diary.STATUS_COLOR[key] + '" data-status="' + key + '" aria-pressed="' + on + '">' + esc(labels[key]) + '</button>';
+      return '<button type="button" class="chip' + (on ? ' is-on' : '') + '" style="' + R.statusStyle(key) + '" data-status="' + key + '" aria-pressed="' + on + '">' + esc(labels[key]) + '</button>';
     }).join('');
+  }
+
+  // Дату спрашиваем только у завершённого: «хочу» — это ещё не случилось,
+  // а у «Заброшено» договорились дату не спрашивать.
+  function syncDateVisibility() {
+    modalEl.querySelector('#dateField').hidden = selectedStatus !== 'done';
+  }
+
+  function clearStatusError() {
+    modalEl.querySelector('#statusPicker').classList.remove('is-invalid');
+    modalEl.querySelector('#statusHint').hidden = true;
   }
 
   function syncDateTypePicker() {
@@ -328,11 +344,49 @@ window.Diary = window.Diary || {};
     });
   }
 
+  // У части каталогов (RAWG) описание лежит не в результатах поиска, а в
+  // карточке конкретной записи — его дозапрашиваем после выбора варианта.
+  // Ответа можно ждать пару секунд, поэтому показываем подсказку: без неё
+  // выглядит так, будто описание просто не подтянулось.
+  var DESCRIPTION_HINT = 'подтягиваю описание…';
+  var pendingDescription = null;
+
+  function requestDescription(provider, externalId) {
+    var promise = provider.fetchDetails(externalId).then(function (details) {
+      return (details && details.description) || '';
+    }).catch(function () { return ''; });
+
+    pendingDescription = promise;
+    setLookupStatus(DESCRIPTION_HINT);
+
+    promise.then(function (description) {
+      if (pendingDescription === promise) pendingDescription = null;
+      var statusEl = modalEl.querySelector('#lookupStatus');
+      // Не затираем статус нового поиска, если он успел начаться.
+      if (statusEl && statusEl.textContent === DESCRIPTION_HINT) setLookupStatus('');
+      if (!description) return;
+      var descEl = modalEl.querySelector('#f_description');
+      if (descEl && !descEl.value) descEl.value = description;
+    });
+  }
+
   function applyLookupResult(result) {
     var provider = currentProvider();
     modalEl.querySelector('#f_title').value = result.title;
     if (selectedCategory === 'book' && result.author) {
       modalEl.querySelector('#f_author').value = result.author;
+    }
+    if (result.description) {
+      modalEl.querySelector('#f_description').value = result.description;
+    }
+    if (result.genres && result.genres.length) {
+      var validGenres = result.genres.filter(function (g) {
+        return Diary.GENRES[selectedCategory].indexOf(g) !== -1;
+      });
+      if (validGenres.length) {
+        selectedGenres = validGenres;
+        syncGenrePicker();
+      }
     }
     if (result.cover) coverData = result.cover;
     syncCoverPreview();
@@ -342,6 +396,10 @@ window.Diary = window.Diary || {};
       url: result.url || null
     };
     clearLookupResults();
+    // Строго после clearLookupResults — иначе оно сотрёт подсказку о загрузке.
+    if (!result.description && provider && provider.fetchDetails) {
+      requestDescription(provider, result.externalId);
+    }
   }
 
   function renderNotesList(container, items, kind) {
@@ -375,10 +433,10 @@ window.Diary = window.Diary || {};
   function collectDate() {
     if (selectedDateType === 'unknown') return null;
     if (selectedDateType === 'exact') {
-      return modalEl.querySelector('#f_date_exact').value || null;
+      return (exactPicker && exactPicker.getValue()) || null;
     }
     var year = modalEl.querySelector('#f_date_year').value.trim();
-    var month = modalEl.querySelector('#f_date_month').value;
+    var month = monthPicker ? monthPicker.getValue() : '';
     if (!year) return null;
     return month ? (year + '-' + String(month).padStart(2, '0')) : year;
   }
@@ -393,10 +451,23 @@ window.Diary = window.Diary || {};
       return;
     }
 
+    // Статус не подставляется сам, поэтому без него не сохраняем: он нужен
+    // и карточке, и фильтрам, и счётчикам.
+    if (!selectedStatus) {
+      var statusPicker = modalEl.querySelector('#statusPicker');
+      statusPicker.classList.add('is-invalid');
+      modalEl.querySelector('#statusHint').hidden = false;
+      statusPicker.scrollIntoView({ block: 'center' });
+      var firstChip = statusPicker.querySelector('button');
+      if (firstChip) firstChip.focus({ preventScroll: true });
+      return;
+    }
+
     var data = {
       category: selectedCategory,
       title: title,
       author: selectedCategory === 'book' ? modalEl.querySelector('#f_author').value.trim() : '',
+      description: modalEl.querySelector('#f_description').value.trim(),
       cover: coverData,
       genres: selectedGenres.slice(),
       rating: ratingPicker ? ratingPicker.getValue() : 0,
@@ -414,6 +485,20 @@ window.Diary = window.Diary || {};
       data.quotes = draftQuotes;
       var created = repo.add(data);
       editingId = created.id;
+    }
+
+    // Запись могли сохранить раньше, чем пришло описание из каталога —
+    // тогда дописываем его в уже сохранённую запись, а не теряем.
+    if (pendingDescription && !data.description) {
+      var awaited = pendingDescription;
+      var savedId = editingId;
+      awaited.then(function (description) {
+        var entry = repo.getById(savedId);
+        if (!description || !entry || entry.description) return;
+        repo.update(savedId, { description: description });
+        // Если запись открыта на просмотре — показываем описание сразу.
+        if (isOpen() && editingId === savedId && !modalEl.querySelector('#entryForm')) renderView();
+      });
     }
 
     if (wasNew) {
@@ -434,7 +519,7 @@ window.Diary = window.Diary || {};
 
     selectedCategory = entry ? entry.category : (defaultCategory || 'movie');
     selectedGenres = entry ? (entry.genres || []).slice() : [];
-    selectedStatus = entry ? entry.status : 'planned';
+    selectedStatus = entry ? entry.status : null;
     selectedDateType = entry ? (entry.dateType || 'unknown') : 'unknown';
     coverData = entry ? (entry.cover || null) : null;
     pendingSource = entry ? (entry.source || null) : null;
@@ -446,6 +531,7 @@ window.Diary = window.Diary || {};
     if (entry) {
       modalEl.querySelector('#f_title').value = entry.title || '';
       modalEl.querySelector('#f_author').value = entry.author || '';
+      modalEl.querySelector('#f_description').value = entry.description || '';
       modalEl.querySelector('#deleteBtn').hidden = false;
     }
 
@@ -453,16 +539,27 @@ window.Diary = window.Diary || {};
     syncGenrePicker();
     syncStatusPicker();
     syncDateTypePicker();
+    syncDateVisibility();
     syncCoverPreview();
     syncLookupVisibility();
 
-    if (entry && selectedDateType === 'exact') {
-      modalEl.querySelector('#f_date_exact').value = entry.date || '';
-    } else if (entry && selectedDateType === 'approx') {
-      var parts = (entry.date || '').split('-');
-      modalEl.querySelector('#f_date_year').value = parts[0] || '';
-      modalEl.querySelector('#f_date_month').value = parts[1] ? String(parseInt(parts[1], 10)) : '';
-    }
+    // Календарь и список месяцев — самодельные (js/pickers.js): нативным
+    // <input type="date"> и <select> выпадашку рисует система, её не стилизовать.
+    var parts = entry && entry.date ? entry.date.split('-') : [];
+    exactPicker = Diary.pickers.calendar(modalEl.querySelector('#dateExactPicker'), {
+      value: selectedDateType === 'exact' ? (entry && entry.date) || '' : '',
+      placeholder: 'Выберите день',
+      ariaLabel: 'Дата'
+    });
+    monthPicker = Diary.pickers.dropdown(modalEl.querySelector('#dateMonthPicker'), {
+      options: [{ value: '', label: 'Без месяца' }].concat(Diary.MONTHS_RU.map(function (m, i) {
+        return { value: i + 1, label: m };
+      })),
+      value: selectedDateType === 'approx' && parts[1] ? parseInt(parts[1], 10) : '',
+      placeholder: 'Месяц',
+      ariaLabel: 'Месяц'
+    });
+    if (selectedDateType === 'approx') modalEl.querySelector('#f_date_year').value = parts[0] || '';
 
     ratingPicker = Diary.stars.renderPicker(modalEl.querySelector('#ratingPicker'), entry ? (entry.rating || 0) : 0, function () {});
     renderCommentsAndQuotes();
@@ -507,7 +604,13 @@ window.Diary = window.Diary || {};
     modalEl.querySelector('#statusPicker').addEventListener('click', function (ev) {
       var btn = ev.target.closest('button'); if (!btn) return;
       selectedStatus = btn.getAttribute('data-status');
+      // Ушли с «завершено» — дату не храним: иначе она осталась бы в записи
+      // невидимой, поля-то спрятаны.
+      if (selectedStatus !== 'done') selectedDateType = 'unknown';
+      clearStatusError();
       syncStatusPicker();
+      syncDateTypePicker();
+      syncDateVisibility();
     });
 
     modalEl.querySelector('#dateTypePicker').addEventListener('click', function (ev) {
@@ -549,12 +652,13 @@ window.Diary = window.Diary || {};
     }
     modalEl.querySelector('#addCommentBtn').addEventListener('click', function () { addNote('comment'); });
     modalEl.querySelector('#addQuoteBtn').addEventListener('click', function () { addNote('quote'); });
-    // Enter в поле заметки добавляет её, а не отправляет всю форму.
+    // Поля — textarea, поэтому обычный Enter переносит строку; добавляет
+    // заметку только Ctrl/Cmd+Enter, чтобы можно было писать текст в несколько строк.
     modalEl.querySelector('#newCommentInput').addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter') { ev.preventDefault(); addNote('comment'); }
+      if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); addNote('comment'); }
     });
     modalEl.querySelector('#newQuoteInput').addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter') { ev.preventDefault(); addNote('quote'); }
+      if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); addNote('quote'); }
     });
 
     modalEl.querySelector('#commentsQuotesSection').addEventListener('click', function (ev) {

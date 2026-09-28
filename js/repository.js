@@ -69,6 +69,7 @@ window.Diary = window.Diary || {};
       category: data.category,
       title: (data.title || '').trim(),
       author: (data.author || '').trim(),
+      description: (data.description || '').trim(),
       cover: data.cover || null,
       genres: Array.isArray(data.genres) ? data.genres.slice() : [],
       rating: typeof data.rating === 'number' ? data.rating : 0,
@@ -142,6 +143,30 @@ window.Diary = window.Diary || {};
     }
   }
 
+  // Слияние с резервной копией: записи сопоставляются по id, побеждает та,
+  // что изменена позже. Поэтому импорт старой копии не затирает свежие правки,
+  // а удаления переезжают сами — они мягкие, через deletedAt.
+  function importItems(list) {
+    var result = { added: 0, updated: 0 };
+    if (!Array.isArray(list)) return result;
+    list.forEach(function (incoming) {
+      if (!incoming || !incoming.id) return;
+      var current = getById(incoming.id);
+      if (!current) {
+        items.push(incoming);
+        result.added++;
+      } else if ((incoming.updatedAt || 0) > (current.updatedAt || 0)) {
+        items[items.indexOf(current)] = incoming;
+        result.updated++;
+      }
+    });
+    if (result.added || result.updated) {
+      persist();
+      notify();
+    }
+    return result;
+  }
+
   function addComment(entryId, text) {
     var entry = getById(entryId);
     if (!entry || !text.trim()) return null;
@@ -195,6 +220,7 @@ window.Diary = window.Diary || {};
     permanentlyDelete: permanentlyDelete,
     emptyTrash: emptyTrash,
     purgeExpired: purgeExpired,
+    importItems: importItems,
     addComment: addComment,
     deleteComment: deleteComment,
     addQuote: addQuote,

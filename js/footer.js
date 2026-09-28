@@ -31,6 +31,10 @@ window.Diary = window.Diary || {};
       '<h3 class="footer-label">Данные</h3>' +
       '<p>' + total + ' ' + utils.plural(total, ['запись', 'записи', 'записей']) + ' хранятся в этом браузере. Если очистить данные сайта, они пропадут.</p>' +
       (trashed ? '<p class="footer-muted">В корзине ' + trashed + ' ' + utils.plural(trashed, ['запись', 'записи', 'записей']) + ' — кнопка в правом нижнем углу.</p>' : '') +
+      '<div class="backup-actions">' +
+      '<button type="button" class="btn btn--small" data-backup="export">Скачать копию</button>' +
+      '<button type="button" class="backup-import" data-backup="import">Загрузить копию</button>' +
+      '</div>' +
       '</div>' +
 
       '<div class="footer-col">' +

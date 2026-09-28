@@ -14,11 +14,17 @@
   --paper: #FFFFFF;
   --ink: #1C1B3A;
   --ink-2: #5D6182;
-  --tomato: #EC1864; /* акцент: малиновый */
+  --tomato: #EC1864;      /* акцент: малиновый */
+  --tomato-deep: #E0115F; /* он же на кнопках: белый текст на #EC1864 не дотягивает
+                             по контрасту до 4.5:1, а на этом — 4.8:1. Разницы глазом
+                             не видно, поэтому фирменный цвет остался прежним. */
   --lilac: #B79CF2;
-  --sun: #FFC43D;
+  --sun: #FFE066;    /* жёлтый: был #FFC43D, но читался оранжевым */
+  --green: #A5E3B2;  /* «сделано» */
+  --stone: #D5CCBD;  /* «Все»: единственный тон без собственного цвета */
+  --slate: #4A4E6E;  /* «заброшено» */
   --forest: #6077D4;
-  --yellow: #FFC43D;
+  --yellow: #FFE066;
   --blue: #6077D4;
   --lav: #DAF5F9;
   --violet: #6077D4;
@@ -104,13 +110,16 @@ button, input, select, textarea { font: inherit; color: inherit; }
 [hidden] { display: none !important; }
 .sr { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); }
 
-/* Заголовки набраны Nauryz. Трекинг подогнан под запасной Onest; когда Nauryz
-   загрузился, app.js ставит .has-display-font и трекинг ослабляется. */
-.footer-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .detail-info h2, .add-head h2, .home-collections h2, .about-block h2 {
+/* Заголовки страниц набраны Nauryz. Трекинг подогнан под запасной Onest; когда
+   Nauryz загрузился, app.js ставит .has-display-font и трекинг ослабляется.
+   В окне записи (.detail-info h2, .add-head h2) шрифт обычный: там заголовок —
+   название фильма или книги, набранное не нами, и плотный дисплейный шрифт
+   на длинных названиях читается хуже. */
+.footer-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .home-collections h2, .about-block h2 {
   font-family: var(--display);
   font-synthesis: none;
 }
-.has-display-font :is(.footer-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .detail-info h2, .add-head h2, .home-collections h2, .about-block h2) {
+.has-display-font :is(.footer-word, .folder-vtitle, .title-sheet h1, .coll-hero h1, .pack-name, .home-collections h2, .about-block h2) {
   letter-spacing: -.01em;
   font-weight: 400;
 }
@@ -121,8 +130,10 @@ button, input, select, textarea { font: inherit; color: inherit; }
   border: 2px solid var(--ink);
   border-radius: 999px;
   padding: 10px 18px 11px;
-  background: var(--yellow);
-  color: var(--ink);
+  /* Главный акцент — малиновый. Жёлтый на кнопках читался оранжевым и тянул
+     на себя всю страницу; теперь он остался в мелочах: крестик, звёзды, метки. */
+  background: var(--tomato-deep);
+  color: #FFFFFF;
   font-weight: 700; font-size: 15px;
   cursor: pointer;
   white-space: nowrap;
@@ -274,7 +285,13 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .folder-peek {
   flex: 1;
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(84px, 1fr));
+  /* Число колонок задано явно, а не через auto-fill: при наведении ширина
+     папки анимируется, и auto-fill пересчитывал бы колонки по ходу анимации —
+     обложки на очередном кадре скачком уменьшались вдвое и перескакивали
+     между рядами. Пороги ниже повторяют ту плотность, которую auto-fill давал
+     у раскрытой папки, но зависят от ширины окна, а она во время наведения не
+     меняется — поэтому пересчёта посреди анимации не случается. */
+  grid-template-columns: minmax(84px, 1fr);
   grid-auto-rows: max-content;
   gap: 12px;
   align-content: start;
@@ -283,6 +300,10 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   -webkit-mask-image: linear-gradient(#000 62%, transparent 96%);
           mask-image: linear-gradient(#000 62%, transparent 96%);
 }
+@media (min-width: 1350px) { .folder-peek { grid-template-columns: repeat(2, minmax(84px, 1fr)); } }
+@media (min-width: 1720px) { .folder-peek { grid-template-columns: repeat(3, minmax(84px, 1fr)); } }
+@media (min-width: 2100px) { .folder-peek { grid-template-columns: repeat(4, minmax(84px, 1fr)); } }
+@media (min-width: 2480px) { .folder-peek { grid-template-columns: repeat(5, minmax(84px, 1fr)); } }
 .mini-cover {
   display: block;
   aspect-ratio: 300 / 420;
@@ -408,7 +429,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   flex: none;
   border: 0;
   background: var(--tc);
-  color: var(--ink);
+  /* Цвет текста задаёт сама плашка: тёмному «Заброшено» нужен светлый. */
+  color: var(--stc, var(--ink));
   font-weight: 700; font-size: 15px;
   padding: 13px 22px 20px;
   margin-right: -10px;
@@ -420,10 +442,11 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 }
 .stab:hover { transform: translateY(3px); }
 .stab .count { font: 500 12px var(--mono); margin-left: 8px; opacity: .6; }
-.stab.is-active { --tc: var(--cream); transform: none; padding-bottom: 16px; box-shadow: none; }
-/* «Все» в неактивном состоянии — тёмный, чтобы не сливаться с белым активным */
-.stab--all:not(.is-active) { color: var(--cream); }
-.stab--all:not(.is-active) .count { opacity: .75; }
+/* Открытый язычок сливается с листом, поэтому текст на нём всегда тёмный. */
+.stab.is-active { --tc: var(--cream); color: var(--ink); transform: none; padding-bottom: 16px; box-shadow: none; }
+/* «Все» — песочный: он светлый, как остальные язычки, но единственный без
+   собственного цвета, поэтому не спорит ни с одной страницей, ни со статусами,
+   ни с белым открытым язычком. Текста и счётчика это не касается — они обычные. */
 .stab.is-active::before, .stab.is-active::after {
   content: ""; position: absolute; bottom: 0;
   width: var(--r); height: var(--r);
@@ -465,6 +488,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .status-pill {
   position: absolute; top: 10px; right: 10px;
   background: var(--sc);
+  color: var(--stc, var(--ink));
   border: 1.5px solid var(--ink); border-radius: 999px;
   padding: 3px 9px 4px;
   font-size: 12px; font-weight: 700;
@@ -547,6 +571,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .detail-info { display: grid; gap: 20px; min-width: 0; }
 .detail-info h2 { margin: 0; font-size: clamp(28px, 3.4vw, 44px); font-weight: 800; letter-spacing: -.05em; line-height: 1.05; }
 .detail-sub { margin: -10px 0 0; font-size: 16px; color: var(--ink-2); }
+.detail-desc { margin: 0; font-size: 15px; line-height: 1.55; color: var(--ink-2); white-space: pre-wrap; }
 .detail-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 18px 24px; }
 
 .chips { display: flex; flex-wrap: wrap; gap: 8px; }
@@ -560,7 +585,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   transition: transform .15s, background .15s;
 }
 .chip:hover { transform: rotate(-2deg); }
-.chip.is-on, .chip:has(input:checked) { background: var(--sc); }
+.chip.is-on, .chip:has(input:checked) { background: var(--sc); color: var(--stc, var(--ink)); }
 .chip input { position: absolute; opacity: 0; pointer-events: none; }
 .chip--type:has(input:checked), .chip--type.is-on { background: var(--c); color: var(--fi); }
 .chip:has(input:focus-visible) { outline: 3px solid var(--violet); outline-offset: 2px; }
@@ -586,7 +611,11 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 }
 .tag:nth-child(odd) { transform: rotate(-1.5deg); }
 
-.link-danger { justify-self: start; border: 0; background: none; padding: 0; color: #C8124F; font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+/* Удаление — тихая ссылка: красной она стояла вплотную к малиновой кнопкой
+   «Редактировать», и две почти одинаковые красные кнопки рядом сбивали с толку.
+   Красный возвращается при наведении, когда до нажатия остался шаг. */
+.link-danger { justify-self: start; border: 0; background: none; padding: 0; color: var(--ink-2); font-weight: 600; text-decoration: underline; text-underline-offset: 3px; cursor: pointer; }
+.link-danger:hover { color: #C8124F; }
 
 /* форма добавления */
 .add-head { grid-column: 1 / -1; display: flex; align-items: baseline; gap: 16px; flex-wrap: wrap; }
@@ -615,7 +644,6 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 
 /* настоящие обложки (загруженные или из каталога) */
 .cover-img { display: block; width: 100%; height: 100%; background: #FFFFFF center / cover no-repeat; }
-.cover-img--contain { background-size: contain; background-color: var(--ink); }
 .mini-cover .cover-img, .now-thumb .cover-img { border-radius: inherit; }
 .detail-cover .cover-img { aspect-ratio: 300 / 420; }
 
@@ -642,16 +670,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 
 /* кнопки */
 .btn--small { font-size: 13px; padding: 6px 12px 7px; }
-.btn--ink { background: var(--ink); color: var(--cream); }
 .btn--ghost { background: var(--cream); }
 .btn:disabled { opacity: .45; cursor: default; transform: none; }
-.inline-form { display: flex; gap: 8px; flex: 1; max-width: 460px; }
-.inline-form input {
-  flex: 1; min-width: 0;
-  border: 2px solid var(--ink); border-radius: 999px;
-  background: var(--cream); color: var(--ink);
-  padding: 10px 16px 11px; font-size: 15px;
-}
 
 /* лист без язычков статусов (подборки, корзина) */
 .sheet--flat { margin-top: 30px; }
@@ -686,13 +706,12 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .pack-peek .mini-cover { flex: none; width: 66px; }
 
 /* выбор записей в подборку */
-.picker { background: #FFFFFF; border: 2px solid var(--ink); border-radius: 22px; padding: 16px; margin-bottom: 30px; }
-.picker-head { display: flex; align-items: baseline; gap: 12px; margin: 0 4px 10px; }
-.picker-head b { font-size: 18px; letter-spacing: -.02em; }
-.picker-head span { font: 700 22px var(--hand); color: var(--tomato); }
 .picker-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(280px, 1fr)); gap: 4px 12px; max-height: 340px; overflow: auto; }
 .picker-row { position: relative; display: flex; align-items: center; gap: 10px; padding: 6px 8px; border-radius: 14px; cursor: pointer; }
-.picker-row:hover { background: #DAF5F9; }
+.picker-row:hover { background: var(--cyan); }
+/* Отмеченные подсвечены: иначе в длинном списке непонятно, что уже взято. */
+.picker-row:has(input:checked) { background: #F1EAFF; }
+.picker-row:has(input:checked):hover { background: var(--cyan); }
 .picker-row input { position: absolute; opacity: 0; pointer-events: none; }
 .picker-check { flex: none; width: 22px; height: 22px; border: 2px solid var(--ink); border-radius: 7px; background: var(--cream); display: grid; place-items: center; }
 .picker-row input:checked + .picker-check { background: var(--sun); }
@@ -736,7 +755,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   font: 600 23px/32px var(--hand);
   background: #FFFFFF repeating-linear-gradient(transparent 0 31px, rgba(96, 119, 212, .35) 31px 32px);
   border: 2px solid var(--ink); border-radius: 16px;
-  padding: 0 16px;
+  padding: 8px 16px;
+  white-space: pre-wrap;
 }
 .quote-card {
   position: relative;
@@ -745,6 +765,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   background: #ECE3FF;
   border-radius: 18px;
   padding: 14px 18px 14px 46px;
+  white-space: pre-wrap;
 }
 .quote-card::before { content: "“"; position: absolute; left: 12px; top: -4px; font: 900 56px/1 var(--font); color: var(--tomato); font-style: normal; }
 .source-link { justify-self: start; font-weight: 600; color: var(--ink-2); text-underline-offset: 3px; }
@@ -755,15 +776,32 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .edit-side, .edit-main { display: grid; gap: 20px; min-width: 0; }
 .edit-side .detail-cover { position: static; }
 .cover-actions { display: flex; align-items: center; gap: 14px; }
-.edit-notes { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr 1fr; gap: 20px 24px; }
+.edit-notes { grid-column: 1 / -1; display: grid; grid-template-columns: 1fr; gap: 24px; }
 .edit-notes .note-card, .edit-notes .quote-card { display: flex; align-items: flex-start; gap: 8px; }
-.edit-notes .note-card span, .edit-notes .quote-card span { flex: 1; }
+.edit-notes .note-card span, .edit-notes .quote-card span { flex: 1; white-space: pre-wrap; }
 .note-delete { flex: none; margin-top: 6px; border: 0; background: rgba(28, 27, 58, .12); width: 22px; height: 22px; border-radius: 50%; cursor: pointer; line-height: 1; font: 600 15px var(--font); font-style: normal; }
 .notes-empty { margin: 0; color: var(--ink-2); font-size: 14px; }
-.add-row { display: flex; gap: 8px; align-items: center; }
-.add-row input { flex: 1; min-width: 0; }
+.add-row { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.add-row textarea { width: 100%; min-height: 96px; resize: vertical; font-family: inherit; }
+.add-row .btn { align-self: flex-end; }
 .edit-actions { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .edit-actions .btn { margin-left: auto; }
+/* окно подборки */
+.sheet-card--narrow { width: min(720px, 100%); }
+.col-form { display: grid; gap: 22px; }
+/* Поле поиска лежит внутри .field, а её правило для input перебивает отступ
+   под иконку — поэтому возвращаем его здесь, иначе лупа ложится на текст. */
+.col-form .field-inline { max-width: 100%; }
+.col-form .field-inline input { padding-left: 42px; border-radius: 999px; }
+.col-form .picker-list { max-height: min(46vh, 420px); margin-top: 4px; }
+/* Место под вертикальную полосу резервируем заранее. Без этого браузер считает
+   колонки по полной ширине, потом добавляет полосу — и список уезжает вбок
+   ровно на её ширину, хотя прокручивать там нечего. overflow-x — страховка для
+   браузеров постарше, которые scrollbar-gutter не знают. */
+.picker-list { scrollbar-gutter: stable; overflow-x: hidden; }
+.col-form .picker-empty { margin: 10px 4px 0; }
+.col-form .edit-actions { margin-top: 2px; }
+
 .field--lookup { position: relative; }
 .lookup-status { text-transform: none; letter-spacing: 0; font: 700 18px var(--hand); color: var(--tomato); margin-left: 6px; }
 .lookup-results:not(:empty) {
@@ -775,10 +813,79 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   max-height: 320px; overflow: auto;
   box-shadow: 0 16px 40px var(--shadow);
 }
-.date-inputs { display: flex; gap: 8px; margin-top: 4px; }
+.date-inputs { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 4px; }
 .date-inputs input { max-width: 200px; }
-.date-inputs .select select { padding-left: 14px; }
+.date-inputs #dateExactPicker { width: min(260px, 100%); }
+.date-inputs #dateMonthPicker { width: 180px; }
 .field input.is-invalid { border-color: #C8124F; background: #FFE3EE; }
+/* Статус не выбран, а запись сохраняют — подсвечиваем группу целиком:
+   подсветить нечего, поля тут нет, только кнопки. */
+.chips.is-invalid { outline: 2px dashed #C8124F; outline-offset: 7px; border-radius: 14px; }
+.field-hint { text-transform: none; letter-spacing: 0; font: 700 18px var(--hand); color: var(--tomato); margin-left: 6px; }
+
+/* ---- самодельные список и календарь (js/pickers.js) ---- */
+.pick { position: relative; }
+.pick-btn {
+  display: flex; align-items: center; gap: 8px;
+  width: 100%;
+  border: 2px solid var(--ink); border-radius: 14px;
+  background: #FFFFFF; color: var(--ink);
+  padding: 10px 12px 11px;
+  font-size: 15px; font-weight: 600; text-align: left;
+  cursor: pointer;
+}
+.pick-btn:hover { background: #F6F3FF; }
+.pick.is-empty .pick-value { color: var(--ink-2); font-weight: 500; }
+.pick-value { flex: 1; min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.pick-caret { flex: none; width: 12px; height: 8px; background: no-repeat center / 12px 8px; }
+.pick-icon { flex: none; width: 18px; height: 18px; fill: none; stroke: var(--ink); stroke-width: 1.8; stroke-linecap: round; }
+.pick-panel {
+  position: absolute; top: calc(100% + 6px); left: 0; z-index: 6;
+  min-width: 100%;
+  background: var(--cream);
+  border: 2px solid var(--ink); border-radius: 18px;
+  padding: 6px;
+  box-shadow: 0 16px 40px var(--shadow);
+}
+.pick--list .pick-panel { display: grid; gap: 2px; max-height: 262px; overflow: auto; }
+.pick-opt {
+  border: 0; background: none; border-radius: 11px;
+  padding: 8px 12px; text-align: left;
+  font-size: 15px; font-weight: 600; cursor: pointer;
+}
+.pick-opt:hover { background: var(--cyan); }
+.pick-opt.is-on { background: var(--sun); }
+
+.pick--date .pick-panel { width: 290px; padding: 12px; }
+.cal-head { display: flex; align-items: center; justify-content: space-between; gap: 8px; margin-bottom: 10px; }
+.cal-title { font-size: 16px; letter-spacing: -.02em; }
+.cal-nav {
+  flex: none; width: 32px; height: 32px;
+  border: 2px solid var(--ink); border-radius: 50%;
+  background: var(--cream); color: var(--ink);
+  font-size: 17px; line-height: 1; cursor: pointer;
+  transition: background .15s;
+}
+.cal-nav:hover { background: var(--sun); }
+.cal-week, .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 2px; }
+.cal-week span { text-align: center; font: 600 10px var(--mono); text-transform: uppercase; color: var(--ink-2); padding-bottom: 6px; }
+.cal-day {
+  height: 34px;
+  border: 0; border-radius: 10px;
+  background: none; color: var(--ink);
+  font-size: 14px; font-weight: 600; cursor: pointer;
+}
+.cal-day:hover { background: var(--cyan); }
+.cal-day.is-weekend { color: var(--tomato); }
+.cal-day.is-today { box-shadow: inset 0 0 0 2px var(--lilac); }
+.cal-day.is-on { background: var(--sun); box-shadow: inset 0 0 0 2px var(--ink); }
+.cal-foot { display: flex; justify-content: space-between; gap: 8px; margin-top: 10px; }
+.cal-link {
+  border: 0; background: none; padding: 4px 6px;
+  font-size: 13px; font-weight: 600; color: var(--ink-2);
+  text-decoration: underline; text-underline-offset: 3px; cursor: pointer;
+}
+.cal-link:hover { color: var(--ink); }
 
 
 /* ============ Полка подборок на главной ============ */
@@ -864,6 +971,15 @@ body.has-modal .trash-fab { display: none; }
 .design-switch button.is-on { background: var(--sun); color: var(--ink); }
 .design-switch button:disabled { cursor: default; color: rgba(255, 255, 255, .45); }
 .design-switch small { font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
+.backup-actions { display: flex; flex-wrap: wrap; align-items: center; gap: 14px; margin-top: 2px; }
+.backup-import {
+  border: 0; background: none; padding: 0;
+  color: rgba(255, 255, 255, .8);
+  font-weight: 600; font-size: 14px;
+  text-decoration: underline; text-underline-offset: 3px;
+  cursor: pointer;
+}
+.backup-import:hover { color: #FFFFFF; }
 .footer-bottom { padding-right: 64px; display: flex; justify-content: space-between; gap: 16px; margin-top: 30px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .14); font: 500 12px var(--mono); color: rgba(255, 255, 255, .55); }
 .footer-bottom a { color: inherit; }
 

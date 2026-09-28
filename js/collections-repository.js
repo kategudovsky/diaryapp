@@ -61,6 +61,29 @@ window.Diary = window.Diary || {};
     return collection;
   }
 
+  // Окно подборки правит черновик и присылает всё разом по «Сохранить»,
+  // поэтому здесь — переименование и замена состава целиком.
+  function rename(id, name) {
+    var c = getById(id);
+    var trimmed = (name || '').trim();
+    if (!c || !trimmed || trimmed === c.name) return c;
+    c.name = trimmed;
+    c.updatedAt = Date.now();
+    persist();
+    notify();
+    return c;
+  }
+
+  function setEntries(id, entryIds) {
+    var c = getById(id);
+    if (!c || !Array.isArray(entryIds)) return c;
+    c.entryIds = entryIds.slice();
+    c.updatedAt = Date.now();
+    persist();
+    notify();
+    return c;
+  }
+
   function remove(id) {
     items = items.filter(function (c) { return c.id !== id; });
     persist();
@@ -85,14 +108,40 @@ window.Diary = window.Diary || {};
     notify();
   }
 
+  // Слияние с резервной копией — по тем же правилам, что и у записей:
+  // сопоставление по id, побеждает подборка с более поздним updatedAt.
+  function importItems(list) {
+    var result = { added: 0, updated: 0 };
+    if (!Array.isArray(list)) return result;
+    list.forEach(function (incoming) {
+      if (!incoming || !incoming.id) return;
+      var current = getById(incoming.id);
+      if (!current) {
+        items.push(incoming);
+        result.added++;
+      } else if ((incoming.updatedAt || 0) > (current.updatedAt || 0)) {
+        items[items.indexOf(current)] = incoming;
+        result.updated++;
+      }
+    });
+    if (result.added || result.updated) {
+      persist();
+      notify();
+    }
+    return result;
+  }
+
   Diary.collectionsRepo = {
     init: init,
     onChange: onChange,
     getAll: getAll,
     getById: getById,
     add: add,
+    rename: rename,
+    setEntries: setEntries,
     remove: remove,
     addEntry: addEntry,
-    removeEntry: removeEntry
+    removeEntry: removeEntry,
+    importItems: importItems
   };
 })(window.Diary);

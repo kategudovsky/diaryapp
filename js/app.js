@@ -51,8 +51,9 @@ window.Diary = window.Diary || {};
   }
 
   function switchTab(tab) {
-    // Смена страницы (в том числе кнопкой «назад» в браузере) закрывает окно записи.
+    // Смена страницы (в том числе кнопкой «назад» в браузере) закрывает окна.
     if (Diary.modal.isOpen()) Diary.modal.close();
+    if (Diary.collectionModal.isOpen()) Diary.collectionModal.close();
     if (state.currentTab === 'collections' && tab !== 'collections') Diary.collections.reset();
     state.currentTab = tab;
     Diary.category.unmount();
@@ -191,6 +192,8 @@ window.Diary = window.Diary || {};
     Diary.search.setup(app);
     Diary.footer.setup();
     Diary.modal.setup();
+    Diary.collectionModal.setup();
+    Diary.backup.setup();
     setupGlobalSearch();
 
     // Общие действия: открыть запись и «добавить» — работают на любой странице.
@@ -227,6 +230,13 @@ window.Diary = window.Diary || {};
       renderCurrentTab();
       Diary.footer.render();
       updateTrashFab();
+    });
+
+    // Подборки меняются из окна подборки, то есть мимо страницы — поэтому
+    // перерисовываемся по событию хранилища, а не по клику.
+    Diary.collectionsRepo.onChange(function () {
+      if (!repo.isReady()) return;
+      renderCurrentTab();
     });
 
     Promise.all([repo.init(), Diary.collectionsRepo.init()]).then(function () {

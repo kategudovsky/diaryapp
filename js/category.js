@@ -33,10 +33,12 @@ window.Diary = window.Diary || {};
   function subtitle(all, cat) {
     var done = all.filter(function (e) { return e.status === 'done'; });
     var thisYear = done.filter(function (e) { return e.dateType !== 'unknown' && e.date && e.date.indexOf(String(YEAR)) === 0; }).length;
+    var dropped = all.filter(function (e) { return e.status === 'dropped'; }).length;
     var rated = all.filter(function (e) { return e.rating > 0; });
     var avg = rated.length ? (rated.reduce(function (s, e) { return s + e.rating; }, 0) / rated.length).toFixed(1).replace('.', ',') : null;
     return all.length + ' ' + utils.plural(all.length, Diary.CATEGORY_FORMS[cat]) +
       ' · ' + Diary.DONE_WORD[cat] + ' ' + done.length + (thisYear ? ' (' + thisYear + ' за ' + YEAR + ')' : '') +
+      (dropped ? ' · заброшено ' + dropped : '') +
       (avg ? ' · средняя оценка ' + avg : '');
   }
 
@@ -89,13 +91,15 @@ window.Diary = window.Diary || {};
 
     app.querySelector('[data-sub]').textContent = subtitle(all, cat);
 
-    var tabs = [['all', 'Все', 'var(--ink)']].concat(Diary.STATUS_KEYS.map(function (k) {
-      return [k, Diary.STATUS_LABEL[cat][k], Diary.STATUS_COLOR[k]];
+    // «Все» — песочный: тон без собственного цвета, поэтому не сливается ни с
+    // одной из четырёх страниц, ни с цветами статусов, ни с белым открытым язычком.
+    var tabs = [['all', 'Все', '--sc:var(--stone)']].concat(Diary.STATUS_KEYS.map(function (k) {
+      return [k, Diary.STATUS_LABEL[cat][k], Diary.render.statusStyle(k)];
     }));
     app.querySelector('[data-status-tabs]').innerHTML = tabs.map(function (tab, i) {
       var n = tab[0] === 'all' ? all.length : all.filter(function (e) { return e.status === tab[0]; }).length;
       var on = f.status === tab[0];
-      return '<button type="button" class="stab' + (tab[0] === 'all' ? ' stab--all' : '') + (on ? ' is-active' : '') + '" data-status="' + tab[0] + '" style="--sc:' + tab[2] + ';z-index:' + (on ? 6 : 5 - i) + '" aria-pressed="' + on + '">' +
+      return '<button type="button" class="stab' + (tab[0] === 'all' ? ' stab--all' : '') + (on ? ' is-active' : '') + '" data-status="' + tab[0] + '" style="' + tab[2] + ';z-index:' + (on ? 6 : 5 - i) + '" aria-pressed="' + on + '">' +
         esc(tab[1]) + '<span class="count">' + n + '</span></button>';
     }).join('');
 

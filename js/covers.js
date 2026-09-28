@@ -5,8 +5,10 @@ window.Diary = window.Diary || {};
 Diary.covers = (() => {
   const INK = '#1C1B3A';
 
-  // Палитра: голубой #DAF5F9, синий #6077D4, жёлтый #FFC43D, малиновый #EC1864, сиреневый #B79CF2.
-  const C = { cyan: '#DAF5F9', blue: '#6077D4', sun: '#FFC43D', berry: '#EC1864', lilac: '#B79CF2', white: '#FFFFFF' };
+  // Палитра: голубой #DAF5F9, синий #6077D4, жёлтый #FFE066, малиновый #EC1864, сиреневый #B79CF2.
+  // Обложки намеренно остались насыщенными, хотя страницы посветлели: карточки —
+  // это то немногое, что должно бить в глаза на светлом фоне.
+  const C = { cyan: '#DAF5F9', blue: '#6077D4', sun: '#FFE066', berry: '#EC1864', lilac: '#B79CF2', white: '#FFFFFF' };
   const PALETTES = [
     { bg: C.lilac,  main: C.berry, acc: C.blue,  text: C.berry },
     { bg: C.blue,  main: C.sun,  acc: C.lilac,  text: C.white },
@@ -73,7 +75,7 @@ Diary.covers = (() => {
     ring(cx, cy, r, c) {
       return `<circle cx="${f(cx)}" cy="${f(cy)}" r="${f(r * 0.86)}" fill="none" stroke="${c}" stroke-width="${f(r * 0.28)}"/>`;
     },
-    cherry(cx, cy, r, c, leaf = '#FFC43D') {
+    cherry(cx, cy, r, c, leaf = '#FFE066') {
       const a = [cx - r * 0.5, cy + r * 0.25], b = [cx + r * 0.55, cy + r * 0.5];
       const top = [cx + r * 0.25, cy - r * 1.0];
       return `<path d="M${f(a[0])} ${f(a[1] - r * 0.4)}Q${f(cx - r * 0.2)} ${f(cy - r * 0.6)} ${f(top[0])} ${f(top[1])}M${f(b[0])} ${f(b[1] - r * 0.4)}Q${f(cx + r * 0.6)} ${f(cy - r * 0.3)} ${f(top[0])} ${f(top[1])}" stroke="${INK}" stroke-width="${f(r * 0.07)}" fill="none" stroke-linecap="round"/>

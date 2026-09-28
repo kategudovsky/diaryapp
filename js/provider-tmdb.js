@@ -18,6 +18,7 @@ window.Diary = window.Diary || {};
     return {
       title: (category === 'series' ? item.name : item.title) || '',
       author: '',
+      description: item.overview || '',
       cover: item.poster_path ? IMAGE_BASE + item.poster_path : null,
       year: (date || '').slice(0, 4),
       externalId: item.id ? String(item.id) : null,

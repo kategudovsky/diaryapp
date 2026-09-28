@@ -10,8 +10,9 @@
 //
 // Where each key comes from:
 //   googleBooks — console.cloud.google.com/apis/credentials (enable "Books API")
-//   tmdb        — themoviedb.org -> Settings -> API -> API Key (v3 auth)
-//   rawg        — rawg.io/apidocs -> Get API key
+//   kinopoisk   — kinopoiskapiunofficial.tech -> sign up, key is issued right away
+//   rawg        — rawg.io/apidocs -> Get API key (the signup form asks for a
+//                 website URL, but doesn't actually verify it)
 //
 // An empty string just disables catalog lookup for that category; everything
 // else keeps working and entries can still be typed in by hand.
@@ -20,7 +21,7 @@ window.Diary = window.Diary || {};
 (function (Diary) {
   Diary.secrets = {
     googleBooks: '',
-    tmdb: '',
+    kinopoisk: '',
     rawg: ''
   };
 })(window.Diary);

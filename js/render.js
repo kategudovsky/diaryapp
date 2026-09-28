@@ -54,12 +54,20 @@ window.Diary = window.Diary || {};
     return Diary.STATUS_LABEL[entry.category][entry.status];
   }
 
+  // Инлайновые переменные плашки статуса: фон и цвет текста на нём.
+  // Одно место на карточки, язычки в папке и чипы в окне записи.
+  function statusStyle(status) {
+    return '--sc:' + Diary.STATUS_COLOR[status] + ';--stc:' + Diary.STATUS_INK[status];
+  }
+
   // Картинка обложки (загруженная или из каталога) либо сгенерированная «открытка».
-  // У игр RAWG отдаёт горизонтальный арт — он вписывается целиком, а не обрезается.
+  // Любая картинка кадрируется по рамке 2:3 — включая горизонтальный арт 16:9,
+  // который отдаёт RAWG для игр: обрезка по центру выглядит куда лучше, чем
+  // вписанный целиком кадр с чёрными полями сверху и снизу.
   function coverInner(entry, opts) {
     if (entry.cover) {
-      return '<span class="cover-img' + (entry.category === 'game' ? ' cover-img--contain' : '') +
-        '" style="background-image:url(\'' + esc(entry.cover) + '\')" role="img" aria-label="' + esc(entry.title) + '"></span>';
+      return '<span class="cover-img" style="background-image:url(\'' + esc(entry.cover) +
+        '\')" role="img" aria-label="' + esc(entry.title) + '"></span>';
     }
     return Diary.covers.cover(entry, opts);
   }
@@ -81,7 +89,7 @@ window.Diary = window.Diary || {};
     return '' +
       '<button type="button" class="card" data-id="' + entry.id + '">' +
       '<span class="cover">' + coverInner(entry) +
-      '<span class="status-pill" style="--sc:' + Diary.STATUS_COLOR[entry.status] + '">' + esc(statusLabel(entry)) + '</span>' +
+      '<span class="status-pill" style="' + statusStyle(entry.status) + '">' + esc(statusLabel(entry)) + '</span>' +
       '</span>' +
       '<span class="card-meta">' +
       '<span class="card-code">' + esc(dateBadge(entry)) + '</span>' +
@@ -93,7 +101,7 @@ window.Diary = window.Diary || {};
   }
 
   function emptyStateHtml(hasAny, category) {
-    var fig = Diary.covers.figure(category || 'movie', category ? Diary.THEME[category].m : '#FFC43D');
+    var fig = Diary.covers.figure(category || 'movie', category ? Diary.THEME[category].m : '#EC1864');
     if (!hasAny) {
       return '<div class="empty">' + fig + '<p>Пока пусто</p><span class="empty-hint">Добавьте первую запись — дневник начнётся с неё.</span>' +
         '<button class="btn" data-action="add"' + (category ? ' data-category="' + category + '"' : '') + ' type="button">+ Положить первое</button></div>';
@@ -115,6 +123,7 @@ window.Diary = window.Diary || {};
     filterAndSort: filterAndSort,
     dateBadge: dateBadge,
     statusLabel: statusLabel,
+    statusStyle: statusStyle,
     cardHtml: cardHtml,
     coverInner: coverInner,
     thumbHtml: thumbHtml,
