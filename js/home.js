@@ -94,9 +94,28 @@ window.Diary = window.Diary || {};
       '</article>';
   }
 
+  // Полка подборок под папками: маленькие папки-подборки и кнопка «новая».
+  function collectionsShelfHtml() {
+    var cols = Diary.collectionsRepo.getAll();
+    return '' +
+      '<section class="home-collections" aria-label="Подборки">' +
+      '<div class="home-collections-head">' +
+      '<div><div class="mono">SET // подборки</div><h2>Подборки</h2></div>' +
+      '<a class="home-collections-all" href="#/collections">все подборки →</a>' +
+      '</div>' +
+      '<div class="packs packs--row">' +
+      cols.map(Diary.collections.packHtml).join('') +
+      '<button type="button" class="pack-new" data-col-create><span aria-hidden="true">+</span>Новая подборка</button>' +
+      '</div>' +
+      '</section>';
+  }
+
   function setup(app) {
     app.addEventListener('click', function (ev) {
       if (Diary.state.currentTab !== 'home') return;
+      var pack = ev.target.closest('[data-col]');
+      if (pack) { Diary.collections.open(pack.getAttribute('data-col')); return; }
+      if (ev.target.closest('[data-col-create]')) { Diary.collections.create(); return; }
       var thumb = ev.target.closest('.mini-cover[data-id]');
       if (thumb) { Diary.modal.openEntry(thumb.getAttribute('data-id')); return; }
       var body = ev.target.closest('[data-go]');
@@ -114,7 +133,8 @@ window.Diary = window.Diary || {};
     app.innerHTML = '<section class="shelf" aria-label="Папки коллекций">' +
       titleSheetHtml(active) +
       Diary.CATEGORIES.map(function (cat, i) { return folderHtml(cat, i, active); }).join('') +
-      '</section>';
+      '</section>' +
+      collectionsShelfHtml();
   }
 
   Diary.home = { setup: setup, render: render };

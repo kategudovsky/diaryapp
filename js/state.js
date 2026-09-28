@@ -3,7 +3,7 @@
 window.Diary = window.Diary || {};
 
 (function (Diary) {
-  var TABS = ['home'].concat(Diary.CATEGORIES, ['collections', 'trash']);
+  var TABS = ['home'].concat(Diary.CATEGORIES, ['collections', 'trash', 'about']);
 
   function freshCategoryFilters() {
     return {

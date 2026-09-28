@@ -63,7 +63,7 @@ window.Diary = window.Diary || {};
     app.innerHTML = '' +
       '<section class="coll" style="--c:' + p.c + ';--fi:' + p.fi + '">' +
       '<div class="coll-head">' +
-      '<a class="back" href="#/">← все папки</a>' +
+      '<a class="back" href="#/">← все фиксы</a>' +
       '<div class="coll-hero">' +
       '<div>' +
       '<div class="mono">BIN // корзина</div>' +

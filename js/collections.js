@@ -84,7 +84,7 @@ window.Diary = window.Diary || {};
     app.innerHTML = '' +
       '<section class="coll" style="' + pageVars() + '">' +
       headHtml({
-        back: '<a class="back" href="#/">← все папки</a>',
+        back: '<a class="back" href="#/">← все фиксы</a>',
         code: 'SET_00 // подборки',
         title: 'Подборки',
         sub: collections.length + ' ' + utils.plural(collections.length, ['подборка', 'подборки', 'подборок']) + ' · записи из любых папок',
@@ -219,5 +219,19 @@ window.Diary = window.Diary || {};
   // При уходе со страницы возвращаемся к списку подборок.
   function reset() { openId = null; pickerOpen = false; formOpen = false; }
 
-  Diary.collections = { setup: setup, render: render, reset: reset };
+  // Открыть подборку с другой страницы (например, с полки на главной).
+  function open(id) {
+    openId = id;
+    pickerOpen = false;
+    Diary.goToTab('collections');
+  }
+
+  // Открыть страницу подборок сразу с полем для новой.
+  function create() {
+    openId = null;
+    formOpen = true;
+    Diary.goToTab('collections');
+  }
+
+  Diary.collections = { setup: setup, render: render, reset: reset, open: open, create: create, packHtml: packHtml };
 })(window.Diary);

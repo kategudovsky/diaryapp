@@ -40,6 +40,7 @@ window.Diary = window.Diary || {};
     else if (isCategory(tab)) Diary.category.render(app, tab, opts);
     else if (tab === 'collections') Diary.collections.render(app);
     else if (tab === 'trash') Diary.trash.render(app);
+    else if (tab === 'about') Diary.about.render(app);
   }
 
   function switchTab(tab) {
@@ -48,7 +49,8 @@ window.Diary = window.Diary || {};
     Diary.category.unmount();
     applyPageTheme(tab);
     renderCurrentTab({ full: true });
-    updateTrashButton();
+    updateNav();
+    Diary.footer.render();
     window.scrollTo(0, 0);
   }
 
@@ -61,15 +63,14 @@ window.Diary = window.Diary || {};
 
   Diary.goToTab = goToTab;
 
-  function updateTrashButton() {
-    var btn = document.getElementById('trashBtn');
-    var count = repo.getTrashed().length;
-    var badge = btn.querySelector('.trash-count');
-    badge.textContent = count > 99 ? '99+' : String(count);
-    badge.hidden = count === 0;
-    btn.classList.toggle('is-active', state.currentTab === 'trash');
-    btn.setAttribute('aria-label', 'Корзина' + (count ? ', записей: ' + count : ''));
-    document.getElementById('collectionsLink').classList.toggle('is-active', state.currentTab === 'collections');
+  // Активный раздел в шапке. Страницы категорий и корзина относятся к «Все фиксы».
+  function updateNav() {
+    var section = state.currentTab === 'collections' || state.currentTab === 'about' ? state.currentTab : 'home';
+    Array.prototype.forEach.call(document.querySelectorAll('[data-nav]'), function (a) {
+      var on = a.getAttribute('data-nav') === section;
+      a.classList.toggle('is-active', on);
+      if (on) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+    });
   }
 
   // ---- тост ----
@@ -133,6 +134,7 @@ window.Diary = window.Diary || {};
     Diary.category.setup(app);
     Diary.collections.setup(app);
     Diary.trash.setup(app);
+    Diary.footer.setup();
     Diary.modal.setup();
     setupGlobalSearch();
 
@@ -151,14 +153,12 @@ window.Diary = window.Diary || {};
       }
     });
 
-    document.getElementById('trashBtn').addEventListener('click', function () { goToTab('trash'); });
-
     window.addEventListener('hashchange', function () { switchTab(tabFromHash()); });
 
     repo.onChange(function () {
       if (!repo.isReady()) return;
       renderCurrentTab();
-      updateTrashButton();
+      Diary.footer.render();
     });
 
     Promise.all([repo.init(), Diary.collectionsRepo.init()]).then(function () {

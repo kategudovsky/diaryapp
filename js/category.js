@@ -47,7 +47,7 @@ window.Diary = window.Diary || {};
     app.innerHTML = '' +
       '<section class="coll" style="' + themeVars(cat) + '">' +
       '<div class="coll-head">' +
-      '<a class="back" href="#/">← все папки</a>' +
+      '<a class="back" href="#/">← все фиксы</a>' +
       '<div class="coll-hero">' +
       '<div>' +
       '<div class="mono">' + t.code + '_0' + (Diary.CATEGORIES.indexOf(cat) + 1) + ' // папка</div>' +
