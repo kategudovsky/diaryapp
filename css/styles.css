@@ -328,7 +328,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .folder:hover .folder-figure { transform: rotate(40deg) scale(1.12); }
 
 /* титульный лист */
-.title-sheet { flex-direction: column; gap: 14px; padding: 26px 30px; }
+/* титульный лист не ссылка: рука только над плитками статистики и плашкой подборок (это <a>) */
+.title-sheet { flex-direction: column; gap: 14px; padding: 26px 30px; cursor: default; }
 .title-sheet h1 {
   margin: 2px 0 0;
   color: var(--tomato);
@@ -399,6 +400,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .coll-figure .doodle { position: absolute; width: 38px; top: -6px; left: -20px; color: var(--cream); }
 
 .coll-tools { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 22px; }
+/* действия над страницей (подборка, корзина) — у правого края белого листа */
+.coll-tools--end { justify-content: flex-end; }
 .field-inline { position: relative; flex: 1; max-width: 340px; }
 .field-inline input, .select select {
   width: 100%;
@@ -484,7 +487,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 }
 .cover svg { display: block; width: 100%; height: 100%; }
 .card:hover .cover, .card:focus-visible .cover { transform: rotate(-2.5deg) translateY(-6px); }
-.card:nth-child(even):hover .cover { transform: rotate(2.5deg) translateY(-6px); }
+.card:nth-child(even):hover .cover, .grid > :nth-child(even) .card:hover .cover { transform: rotate(2.5deg) translateY(-6px); }
 .status-pill {
   position: absolute; top: 10px; right: 10px;
   background: var(--sc);
@@ -670,7 +673,8 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 
 /* кнопки */
 .btn--small { font-size: 13px; padding: 6px 12px 7px; }
-.btn--ghost { background: var(--cream); }
+.btn--ghost { background: var(--cream); color: var(--ink); }
+.btn--danger { background: var(--tomato-deep); color: #FFFFFF; }
 .btn:disabled { opacity: .45; cursor: default; transform: none; }
 
 /* лист без язычков статусов (подборки, корзина) */
@@ -781,9 +785,10 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .edit-notes .note-card span, .edit-notes .quote-card span { flex: 1; white-space: pre-wrap; }
 .note-delete { flex: none; margin-top: 6px; border: 0; background: rgba(28, 27, 58, .12); width: 22px; height: 22px; border-radius: 50%; cursor: pointer; line-height: 1; font: 600 15px var(--font); font-style: normal; }
 .notes-empty { margin: 0; color: var(--ink-2); font-size: 14px; }
-.add-row { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
-.add-row textarea { width: 100%; min-height: 96px; resize: vertical; font-family: inherit; }
-.add-row .btn { align-self: flex-end; }
+.note-compose { display: flex; flex-direction: column; gap: 8px; align-items: stretch; }
+.note-compose textarea { width: 100%; min-height: 96px; resize: vertical; font-family: inherit; }
+.note-compose .btn { align-self: flex-end; }
+.note-compose [data-note-more] { align-self: flex-start; }
 .edit-actions { grid-column: 1 / -1; display: flex; justify-content: space-between; align-items: center; gap: 16px; }
 .edit-actions .btn { margin-left: auto; }
 /* окно подборки */
@@ -1001,6 +1006,42 @@ body.has-modal .trash-fab { display: none; }
 .about-block h2 { margin: 0 0 12px; font-size: 28px; line-height: 1.05; letter-spacing: -.01em; }
 .about-block p { margin: 0 0 10px; font-size: 16px; line-height: 1.55; color: var(--ink-2); max-width: 52ch; }
 .about-block a { color: var(--ink); font-weight: 600; }
+
+
+/* ============ Крестик «удалить» на карточке ============ */
+.card-wrap { position: relative; display: flex; }
+.card-wrap .card { width: 100%; }
+.card-delete {
+  position: absolute; top: -10px; right: -10px; z-index: 3;
+  width: 34px; height: 34px;
+  display: grid; place-items: center;
+  border: 2px solid var(--ink); border-radius: 50%;
+  background: #FFFFFF; color: var(--ink);
+  cursor: pointer;
+  opacity: 0; transform: scale(.8);
+  transition: opacity .18s, transform .18s, background .18s, color .18s;
+}
+.card-delete svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 2.6; stroke-linecap: round; }
+.card-wrap:hover .card-delete, .card-wrap:focus-within .card-delete { opacity: 1; transform: none; }
+.card-delete:hover { background: var(--tomato-deep); color: #FFFFFF; border-color: var(--tomato-deep); transform: rotate(90deg); }
+@media (hover: none) { .card-delete { opacity: 1; transform: none; } }
+
+/* ============ Окно подтверждения ============ */
+.confirm-root { position: fixed; inset: 0; z-index: 80; display: grid; place-items: center; padding: 20px; }
+.confirm-root[hidden] { display: none; }
+.confirm-backdrop { position: absolute; inset: 0; background: rgba(28, 27, 58, .55); animation: fade .2s; }
+.confirm-card {
+  position: relative;
+  width: min(440px, 100%);
+  background: #FFFFFF; color: var(--ink);
+  border: 2px solid var(--ink); border-radius: 24px;
+  padding: 26px 26px 22px;
+  box-shadow: 0 18px 50px rgba(28, 27, 58, .3);
+  animation: pop .3s cubic-bezier(.3, 1.4, .5, 1);
+}
+.confirm-card h2 { margin: 0 0 10px; font-size: 21px; line-height: 1.25; letter-spacing: -.02em; }
+.confirm-card p { margin: 0 0 22px; font-size: 15px; line-height: 1.45; color: var(--ink-2); }
+.confirm-actions { display: flex; justify-content: flex-end; gap: 10px; flex-wrap: wrap; }
 
 /* ============ Адаптив ============ */
 @media (max-width: 1180px) {

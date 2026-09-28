@@ -1,5 +1,5 @@
 // Страница результатов поиска: #/search?q=…
-// Ищет по названию, автору, жанрам, комментариям и цитатам во всех папках
+// Ищет по названию, автору, жанрам, заметкам и цитатам во всех папках
 // (те же правила, что у поиска внутри папки) и по названиям подборок.
 // Как и страница категории, каркас строится один раз, а при вводе обновляются
 // только результаты — поле не теряет фокус. Адрес обновляется без перехода.
@@ -30,13 +30,13 @@ window.Diary = window.Diary || {};
     window.location.hash = hash;
   }
 
-  // Где нашлось слово, если не в названии, авторе или жанре: кусочек комментария или цитаты.
+  // Где нашлось слово, если не в названии, авторе или жанре: кусочек заметки или цитаты.
   function snippet(e, query) {
     var ql = query.toLowerCase();
     if ((e.title || '').toLowerCase().indexOf(ql) > -1 ||
       (e.author || '').toLowerCase().indexOf(ql) > -1 ||
       (e.genres || []).join(' ').toLowerCase().indexOf(ql) > -1) return null;
-    var pools = [['комментарий', e.comments || []], ['цитата', e.quotes || []]];
+    var pools = [['заметка', e.comments || []], ['цитата', e.quotes || []]];
     for (var i = 0; i < pools.length; i++) {
       for (var j = 0; j < pools[i][1].length; j++) {
         var text = pools[i][1][j].text;
@@ -128,14 +128,14 @@ window.Diary = window.Diary || {};
     if (list.length) {
       out += '<div class="grid">' + list.map(function (e) {
         var sn = snippet(e, q);
-        return '<div class="search-item">' + R.cardHtml(e) +
+        return '<div class="search-item">' + R.cardHtml(e, { deletable: true }) +
           (sn ? '<p class="search-snippet"><span>' + sn.kind + '</span>' + sn.html + '</p>' : '') + '</div>';
       }).join('') + '</div>';
     }
     if (!out) {
       out = '<div class="empty">' + Diary.covers.figure('movie', '#EC1864') +
         '<p>' + (q ? 'Ничего не нашлось' : 'Что ищем?') + '</p>' +
-        '<span class="empty-hint">' + (q ? 'Попробуйте другое слово — поиск идёт по названиям, авторам, жанрам, комментариям и цитатам.' : 'Например, «Мураками», «фэнтези» или слово из цитаты.') + '</span></div>';
+        '<span class="empty-hint">' + (q ? 'Попробуйте другое слово — поиск идёт по названиям, авторам, жанрам, заметкам и цитатам.' : 'Например, «Мураками», «фэнтези» или слово из цитаты.') + '</span></div>';
     }
     app.querySelector('[data-search-results]').innerHTML = out;
   }

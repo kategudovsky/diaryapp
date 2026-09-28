@@ -115,6 +115,26 @@ window.Diary = window.Diary || {};
     fab.classList.toggle('is-on-footer', cy > s.top && r.left < s.right);
   }
 
+  // ---- удаление записи с подтверждением ----
+  // Одно место для крестика на карточке и кнопки «В корзину» в окне записи.
+  // Возвращает Promise<boolean>: ушла ли запись в корзину.
+  Diary.askDeleteEntry = function (id) {
+    var entry = repo.getById(id);
+    if (!entry) return Promise.resolve(false);
+    return Diary.confirm({
+      title: 'Вы уверены, что хотите удалить ' + Diary.CATEGORY_ACC[entry.category] + ' «' + entry.title + '»?',
+      text: 'Запись попадёт в корзину — её можно вернуть в течение ' + Diary.TRASH_RETENTION_DAYS + ' дней.',
+      ok: 'Удалить',
+      cancel: 'Оставить',
+      danger: true
+    }).then(function (yes) {
+      if (!yes) return false;
+      repo.softDelete(id);
+      Diary.toast('Запись в корзине — её можно восстановить ' + Diary.TRASH_RETENTION_DAYS + ' дней');
+      return true;
+    });
+  };
+
   // ---- тост ----
   var toastTimer = null;
   Diary.toast = function (msg) {
@@ -198,6 +218,9 @@ window.Diary = window.Diary || {};
 
     // Общие действия: открыть запись и «добавить» — работают на любой странице.
     document.addEventListener('click', function (ev) {
+      // Крестик на карточке: сразу в корзину через подтверждение, без окна записи.
+      var del = ev.target.closest('[data-delete-entry]');
+      if (del) { Diary.askDeleteEntry(del.getAttribute('data-delete-entry')); return; }
       var open = ev.target.closest('[data-open]');
       if (open) {
         document.getElementById('globalSearchResults').hidden = true;

@@ -11,7 +11,7 @@ window.Diary = window.Diary || {};
     return entry.status === filterValue;
   }
 
-  // Поиск по названию, автору, жанрам, комментариям и цитатам.
+  // Поиск по названию, автору, жанрам, заметкам и цитатам.
   function matchesQuery(e, query) {
     var q = (query || '').trim().toLowerCase();
     if (!q) return true;
@@ -83,10 +83,12 @@ window.Diary = window.Diary || {};
     return '<span class="now-thumb">' + coverInner(entry, { text: false }) + '</span>';
   }
 
-  function cardHtml(entry) {
+  // opts.deletable — крестик «удалить» в углу карточки (появляется при наведении).
+  // Кнопку нельзя вложить в кнопку-карточку, поэтому обе лежат в общей обёртке.
+  function cardHtml(entry, opts) {
     var genresStr = (entry.genres || []).join(', ');
     var sub = entry.category === 'book' && entry.author ? entry.author : genresStr;
-    return '' +
+    var card = '' +
       '<button type="button" class="card" data-id="' + entry.id + '">' +
       '<span class="cover">' + coverInner(entry) +
       '<span class="status-pill" style="' + statusStyle(entry.status) + '">' + esc(statusLabel(entry)) + '</span>' +
@@ -98,6 +100,11 @@ window.Diary = window.Diary || {};
       (entry.rating > 0 ? Diary.stars.staticStarsHtml(entry.rating) : '') +
       '</span>' +
       '</button>';
+    if (!(opts && opts.deletable)) return card;
+    return '<div class="card-wrap">' + card +
+      '<button type="button" class="card-delete" data-delete-entry="' + entry.id + '" title="Удалить" aria-label="Удалить «' + esc(entry.title) + '»">' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>' +
+      '</div>';
   }
 
   function emptyStateHtml(hasAny, category) {
@@ -114,7 +121,7 @@ window.Diary = window.Diary || {};
       container.innerHTML = emptyStateHtml(allList.length > 0, category);
       return;
     }
-    container.innerHTML = list.map(cardHtml).join('');
+    container.innerHTML = list.map(function (e) { return cardHtml(e, { deletable: true }); }).join('');
   }
 
   Diary.render = {

@@ -36,6 +36,13 @@ window.Diary = window.Diary || {};
   // thus has no id yet); folded into the entry itself on first save.
   var draftComments = [];
   var draftQuotes = [];
+  // Открыто ли поле для новой заметки/цитаты. Пока список пуст, поле открыто
+  // сразу; после сохранения вместо него — кнопка «Добавить ещё».
+  var composeOpen = { comment: true, quote: true };
+  var NOTE_TEXT = {
+    comment: { more: '+ Добавить ещё заметку', placeholder: 'Что запомнилось?', aria: 'Новая заметка' },
+    quote: { more: '+ Добавить ещё цитату', placeholder: 'Любимая фраза', aria: 'Новая цитата' }
+  };
   // Which catalog result (if any) the current form was filled from.
   var pendingSource = null;
   var lookupResults = [];
@@ -95,7 +102,7 @@ window.Diary = window.Diary || {};
       (entry.rating > 0 ? '<div class="field"><span class="label">Оценка</span>' + Diary.stars.staticStarsHtml(entry.rating, 28) + '</div>' : '') +
       '<div class="field"><span class="label">Когда</span><span class="detail-value">' + esc(dateBadge) + '</span></div>' +
       '</div>' +
-      (entry.comments && entry.comments.length ? '<div class="field"><span class="label">Комментарии</span><div class="notes-list">' + notesHtml(entry.comments, 'comment') + '</div></div>' : '') +
+      (entry.comments && entry.comments.length ? '<div class="field"><span class="label">Заметки</span><div class="notes-list">' + notesHtml(entry.comments, 'comment') + '</div></div>' : '') +
       (entry.quotes && entry.quotes.length ? '<div class="field"><span class="label">Цитаты</span><div class="notes-list">' + notesHtml(entry.quotes, 'quote') + '</div></div>' : '') +
       source +
       '<div class="detail-actions">' +
@@ -108,10 +115,7 @@ window.Diary = window.Diary || {};
     modalEl.querySelector('#modalCloseBtn').addEventListener('click', closeModal);
     modalEl.querySelector('#editBtn').addEventListener('click', function () { renderEdit(); });
     modalEl.querySelector('#deleteBtn').addEventListener('click', function () {
-      if (!confirm('Переместить запись в корзину?')) return;
-      repo.softDelete(editingId);
-      closeModal();
-      Diary.toast('Запись в корзине — её можно восстановить ' + Diary.TRASH_RETENTION_DAYS + ' дней');
+      Diary.askDeleteEntry(editingId).then(function (gone) { if (gone) closeModal(); });
     });
     modalEl.querySelector('#editBtn').focus({ preventScroll: true });
   }
@@ -197,14 +201,14 @@ window.Diary = window.Diary || {};
 
       '<div class="edit-notes" id="commentsQuotesSection">' +
       '<div class="field">' +
-      '<span class="label">Комментарии</span>' +
+      '<span class="label">Заметки</span>' +
       '<div class="notes-list" id="commentsList"></div>' +
-      '<div class="add-row"><textarea id="newCommentInput" rows="3" placeholder="Что запомнилось?" aria-label="Новый комментарий"></textarea><button type="button" class="btn btn--small" id="addCommentBtn">+ Добавить комментарий</button></div>' +
+      '<div class="note-compose" id="commentCompose"></div>' +
       '</div>' +
       '<div class="field">' +
       '<span class="label">Цитаты</span>' +
       '<div class="notes-list" id="quotesList"></div>' +
-      '<div class="add-row"><textarea id="newQuoteInput" rows="3" placeholder="Любимая фраза" aria-label="Новая цитата"></textarea><button type="button" class="btn btn--small" id="addQuoteBtn">+ Добавить ещё цитату</button></div>' +
+      '<div class="note-compose" id="quoteCompose"></div>' +
       '</div>' +
       '</div>' +
 
@@ -402,32 +406,56 @@ window.Diary = window.Diary || {};
     }
   }
 
-  function renderNotesList(container, items, kind) {
-    if (!items || items.length === 0) {
-      container.innerHTML = '<p class="notes-empty">Пока нет записей.</p>';
-      return;
+  function notesOf(kind) {
+    if (editingId) {
+      var entry = repo.getById(editingId);
+      return entry ? (kind === 'comment' ? entry.comments : entry.quotes) || [] : [];
     }
-    container.innerHTML = items.map(function (it) {
+    return kind === 'comment' ? draftComments : draftQuotes;
+  }
+
+  // Список сохранённых и под ним — либо поле с «Сохранить», либо «Добавить ещё».
+  // Одновременно двух кнопок нет. Поле перерисовывается только своё, чтобы
+  // недописанный текст в соседнем не пропадал.
+  function renderNotes(kind) {
+    var items = notesOf(kind);
+    var list = modalEl.querySelector(kind === 'comment' ? '#commentsList' : '#quotesList');
+    var compose = modalEl.querySelector(kind === 'comment' ? '#commentCompose' : '#quoteCompose');
+    if (!list || !compose) return;
+    if (!items.length) composeOpen[kind] = true;
+
+    list.innerHTML = items.map(function (it) {
       return '<div class="' + (kind === 'quote' ? 'quote-card' : 'note-card') + ' note-editable" data-id="' + it.id + '">' +
         '<span>' + esc(it.text) + '</span>' +
         '<button type="button" class="note-delete" data-kind="' + kind + '" data-id="' + it.id + '" aria-label="Удалить">×</button>' +
         '</div>';
     }).join('');
+
+    var t = NOTE_TEXT[kind];
+    compose.innerHTML = composeOpen[kind]
+      ? '<textarea data-note-input="' + kind + '" rows="3" placeholder="' + t.placeholder + '" aria-label="' + t.aria + '"></textarea>' +
+        '<button type="button" class="btn btn--small" data-note-save="' + kind + '">Сохранить</button>'
+      : '<button type="button" class="btn btn--small btn--ghost" data-note-more="' + kind + '">' + t.more + '</button>';
   }
 
   function renderCommentsAndQuotes() {
-    var comments, quotes;
+    renderNotes('comment');
+    renderNotes('quote');
+  }
+
+  // Сохраняет текст из открытого поля. Возвращает true, если было что сохранять.
+  function saveNote(kind) {
+    var input = modalEl.querySelector('[data-note-input="' + kind + '"]');
+    if (!input || !input.value.trim()) return false;
     if (editingId) {
-      var entry = repo.getById(editingId);
-      if (!entry) return;
-      comments = entry.comments;
-      quotes = entry.quotes;
+      if (kind === 'comment') repo.addComment(editingId, input.value);
+      else repo.addQuote(editingId, input.value);
     } else {
-      comments = draftComments;
-      quotes = draftQuotes;
+      (kind === 'comment' ? draftComments : draftQuotes).push({ id: utils.uid(), text: input.value.trim(), createdAt: Date.now() });
     }
-    renderNotesList(modalEl.querySelector('#commentsList'), comments, 'comment');
-    renderNotesList(modalEl.querySelector('#quotesList'), quotes, 'quote');
+    composeOpen[kind] = false;
+    renderNotes(kind);
+    return true;
   }
 
   function collectDate() {
@@ -462,6 +490,10 @@ window.Diary = window.Diary || {};
       if (firstChip) firstChip.focus({ preventScroll: true });
       return;
     }
+
+    // Недописанную заметку или цитату, для которой не нажали «Сохранить», не теряем.
+    saveNote('comment');
+    saveNote('quote');
 
     var data = {
       category: selectedCategory,
@@ -562,6 +594,8 @@ window.Diary = window.Diary || {};
     if (selectedDateType === 'approx') modalEl.querySelector('#f_date_year').value = parts[0] || '';
 
     ratingPicker = Diary.stars.renderPicker(modalEl.querySelector('#ratingPicker'), entry ? (entry.rating || 0) : 0, function () {});
+    // Поле для новой заметки открыто сразу, только если заметок ещё нет.
+    composeOpen = { comment: !notesOf('comment').length, quote: !notesOf('quote').length };
     renderCommentsAndQuotes();
 
     modalEl.querySelector('#categoryPicker').addEventListener('click', function (ev) {
@@ -637,52 +671,49 @@ window.Diary = window.Diary || {};
       });
     });
 
-    function addNote(kind) {
-      var input = modalEl.querySelector(kind === 'comment' ? '#newCommentInput' : '#newQuoteInput');
-      if (!input.value.trim()) return;
-      if (editingId) {
-        if (kind === 'comment') repo.addComment(editingId, input.value);
-        else repo.addQuote(editingId, input.value);
-      } else {
-        (kind === 'comment' ? draftComments : draftQuotes).push({ id: utils.uid(), text: input.value.trim(), createdAt: Date.now() });
+    var notesSection = modalEl.querySelector('#commentsQuotesSection');
+    notesSection.addEventListener('click', function (ev) {
+      var save = ev.target.closest('[data-note-save]');
+      if (save) {
+        var kind = save.getAttribute('data-note-save');
+        if (!saveNote(kind)) modalEl.querySelector('[data-note-input="' + kind + '"]').focus();
+        return;
       }
-      input.value = '';
-      renderCommentsAndQuotes();
-      input.focus();
-    }
-    modalEl.querySelector('#addCommentBtn').addEventListener('click', function () { addNote('comment'); });
-    modalEl.querySelector('#addQuoteBtn').addEventListener('click', function () { addNote('quote'); });
-    // Поля — textarea, поэтому обычный Enter переносит строку; добавляет
-    // заметку только Ctrl/Cmd+Enter, чтобы можно было писать текст в несколько строк.
-    modalEl.querySelector('#newCommentInput').addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); addNote('comment'); }
-    });
-    modalEl.querySelector('#newQuoteInput').addEventListener('keydown', function (ev) {
-      if (ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) { ev.preventDefault(); addNote('quote'); }
-    });
-
-    modalEl.querySelector('#commentsQuotesSection').addEventListener('click', function (ev) {
+      var more = ev.target.closest('[data-note-more]');
+      if (more) {
+        var k = more.getAttribute('data-note-more');
+        composeOpen[k] = true;
+        renderNotes(k);
+        modalEl.querySelector('[data-note-input="' + k + '"]').focus();
+        return;
+      }
       var btn = ev.target.closest('.note-delete');
       if (!btn) return;
       var id = btn.getAttribute('data-id');
-      var kind = btn.getAttribute('data-kind');
+      var kindDel = btn.getAttribute('data-kind');
       if (editingId) {
-        if (kind === 'comment') repo.deleteComment(editingId, id);
+        if (kindDel === 'comment') repo.deleteComment(editingId, id);
         else repo.deleteQuote(editingId, id);
-      } else if (kind === 'comment') {
+      } else if (kindDel === 'comment') {
         draftComments = draftComments.filter(function (c) { return c.id !== id; });
       } else {
         draftQuotes = draftQuotes.filter(function (q) { return q.id !== id; });
       }
-      renderCommentsAndQuotes();
+      renderNotes(kindDel);
+    });
+    // Поля — textarea, поэтому обычный Enter переносит строку; сохраняет
+    // только Ctrl/Cmd+Enter, чтобы можно было писать текст в несколько строк.
+    notesSection.addEventListener('keydown', function (ev) {
+      var input = ev.target.closest('[data-note-input]');
+      if (input && ev.key === 'Enter' && (ev.ctrlKey || ev.metaKey)) {
+        ev.preventDefault();
+        saveNote(input.getAttribute('data-note-input'));
+      }
     });
 
     modalEl.querySelector('#deleteBtn').addEventListener('click', function () {
       if (!editingId) return;
-      if (!confirm('Переместить запись в корзину?')) return;
-      repo.softDelete(editingId);
-      closeModal();
-      Diary.toast('Запись в корзине — её можно восстановить ' + Diary.TRASH_RETENTION_DAYS + ' дней');
+      Diary.askDeleteEntry(editingId).then(function (gone) { if (gone) closeModal(); });
     });
 
     modalEl.querySelector('#modalCloseBtn').addEventListener('click', function () {

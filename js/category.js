@@ -43,6 +43,8 @@ window.Diary = window.Diary || {};
   }
 
   function mount(app, cat) {
+    // Вход в папку всегда начинается со вкладки «Все».
+    state.filters[cat].status = 'all';
     var t = Diary.THEME[cat];
     var f = state.filters[cat];
     var genreOptions = '<option value="all">Все жанры</option>' + Diary.GENRES[cat].map(function (g) {

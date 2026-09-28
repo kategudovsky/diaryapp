@@ -13,9 +13,13 @@ window.Diary = window.Diary || {};
       if (Diary.state.currentTab !== 'trash') return;
       var t = ev.target;
       if (t.closest('[data-empty-trash]')) {
-        if (repo.getTrashed().length === 0) return;
-        if (!confirm('Удалить все записи в корзине навсегда? Это действие нельзя отменить.')) return;
-        repo.emptyTrash();
+        var n = repo.getTrashed().length;
+        if (n === 0) return;
+        Diary.confirm({
+          title: 'Очистить корзину?',
+          text: n + ' ' + utils.plural(n, ['запись удалится', 'записи удалятся', 'записей удалятся']) + ' навсегда. Это действие нельзя отменить.',
+          ok: 'Очистить', cancel: 'Оставить', danger: true
+        }).then(function (yes) { if (yes) repo.emptyTrash(); });
         return;
       }
       var restoreBtn = t.closest('[data-action="restore"]');
@@ -25,8 +29,14 @@ window.Diary = window.Diary || {};
         return;
       }
       var deleteBtn = t.closest('[data-action="delete-forever"]');
-      if (deleteBtn && confirm('Удалить эту запись навсегда? Это действие нельзя отменить.')) {
-        repo.permanentlyDelete(deleteBtn.getAttribute('data-id'));
+      if (deleteBtn) {
+        var id = deleteBtn.getAttribute('data-id');
+        var entry = repo.getById(id);
+        Diary.confirm({
+          title: 'Удалить ' + (entry ? Diary.CATEGORY_ACC[entry.category] + ' «' + entry.title + '»' : 'запись') + ' навсегда?',
+          text: 'Это действие нельзя отменить.',
+          ok: 'Удалить', cancel: 'Оставить', danger: true
+        }).then(function (yes) { if (yes) repo.permanentlyDelete(id); });
       }
     });
   }
@@ -71,7 +81,7 @@ window.Diary = window.Diary || {};
       '</div>' +
       '<div class="coll-figure">' + Diary.covers.figure('trash', '#EC1864') + '</div>' +
       '</div>' +
-      '<div class="coll-tools">' +
+      '<div class="coll-tools coll-tools--end">' +
       '<button type="button" class="btn btn--ghost" data-empty-trash' + (trashed.length ? '' : ' disabled') + '>Очистить корзину</button>' +
       '</div>' +
       '</div>' +

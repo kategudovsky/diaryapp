@@ -136,11 +136,7 @@ window.Diary = window.Diary || {};
 
     modalEl.querySelector('#colDelete').addEventListener('click', function () {
       if (!editingId) return;
-      var name = col ? col.name : '';
-      if (!confirm('Удалить подборку «' + name + '»? Сами записи останутся в дневнике.')) return;
-      collRepo.remove(editingId);
-      close();
-      Diary.toast('Подборка удалена — записи на месте');
+      Diary.collections.askDelete(col || collRepo.getById(editingId)).then(function (gone) { if (gone) close(); });
     });
 
     modalEl.querySelector('#colForm').addEventListener('submit', handleSubmit);

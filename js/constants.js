@@ -12,6 +12,14 @@ window.Diary = window.Diary || {};
     book: 'Книга'
   };
 
+  // Винительный падеж: «удалить фильм / игру / книгу / сериал».
+  Diary.CATEGORY_ACC = {
+    movie: 'фильм',
+    series: 'сериал',
+    game: 'игру',
+    book: 'книгу'
+  };
+
   Diary.CATEGORY_LABEL_PLURAL = {
     movie: 'Фильмы',
     series: 'Сериалы',

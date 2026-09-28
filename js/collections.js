@@ -52,7 +52,7 @@ window.Diary = window.Diary || {};
       '<div class="coll-figure coll-figure--still">' + Diary.covers.figure('collections', '#EC1864') +
       '<svg class="doodle" viewBox="0 0 60 60" aria-hidden="true">' + Diary.covers.sparkle(30, 30, 26, 'currentColor') + '</svg></div>' +
       '</div>' +
-      '<div class="coll-tools">' + opts.tools + '</div>' +
+      '<div class="coll-tools' + (opts.toolsEnd ? ' coll-tools--end' : '') + '">' + opts.tools + '</div>' +
       '</div>';
   }
 
@@ -116,10 +116,28 @@ window.Diary = window.Diary || {};
         code: 'SET // подборка',
         title: col.name,
         sub: countText(entries.length),
-        tools: '<button type="button" class="btn" data-col-edit>Изменить подборку</button>'
+        toolsEnd: true,
+        tools: '<button type="button" class="btn btn--ghost" data-col-delete>Удалить подборку</button>' +
+          '<button type="button" class="btn" data-col-edit>Изменить подборку</button>'
       }) +
       '<div class="sheet sheet--flat">' + gridHtml + '</div>' +
       '</section>';
+  }
+
+  // Удаление подборки с подтверждением. Записи остаются в дневнике.
+  function askDelete(col) {
+    return Diary.confirm({
+      title: 'Вы уверены, что хотите удалить подборку «' + col.name + '»?',
+      text: 'Сами записи останутся в своих папках.',
+      ok: 'Удалить',
+      cancel: 'Оставить',
+      danger: true
+    }).then(function (yes) {
+      if (!yes) return false;
+      collRepo.remove(col.id);
+      Diary.toast('Подборка удалена — записи на месте');
+      return true;
+    });
   }
 
   // ==================== PUBLIC ====================
@@ -139,6 +157,7 @@ window.Diary = window.Diary || {};
 
       var col = current();
       if (t.closest('[data-col-edit]') && col) { Diary.collectionModal.open(col.id); return; }
+      if (t.closest('[data-col-delete]') && col) { askDelete(col).then(function (gone) { if (gone) { openId = null; render(app); } }); return; }
 
       var removeBtn = t.closest('[data-remove]');
       if (removeBtn && col) { collRepo.removeEntry(col.id, removeBtn.getAttribute('data-remove')); render(app); return; }
@@ -181,5 +200,5 @@ window.Diary = window.Diary || {};
     Diary.goToTab('collections');
   }
 
-  Diary.collections = { setup: setup, render: render, reset: reset, open: open, create: create, packHtml: packHtml };
+  Diary.collections = { setup: setup, render: render, reset: reset, open: open, create: create, packHtml: packHtml, askDelete: askDelete };
 })(window.Diary);
