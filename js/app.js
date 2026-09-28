@@ -75,6 +75,8 @@ window.Diary = window.Diary || {};
   }
 
   Diary.goToTab = goToTab;
+  // Полная перерисовка текущей страницы (например, после смены дизайна).
+  Diary.refresh = function () { switchTab(state.currentTab); };
 
   // Активный раздел в шапке. Страницы категорий и корзина относятся к «Все фиксы».
   function updateNav() {

@@ -1,5 +1,5 @@
 // Футер — последний лист картотеки: язычок сверху, название с расшифровкой,
-// где хранятся данные и переключатель дизайна (стандартный появится позже).
+// где хранятся данные и переключатель дизайна.
 window.Diary = window.Diary || {};
 
 (function (Diary) {
@@ -40,8 +40,10 @@ window.Diary = window.Diary || {};
       '<div class="footer-col">' +
       '<h3 class="footer-label">Дизайн</h3>' +
       '<div class="design-switch" role="radiogroup" aria-label="Дизайн">' +
-      '<button type="button" role="radio" aria-checked="true" class="is-on">Дофаминовый</button>' +
-      '<button type="button" role="radio" aria-checked="false" disabled title="Скоро">Стандартный<small>скоро</small></button>' +
+      ['dopamine', 'standard'].map(function (d) {
+        var on = Diary.design.get() === d;
+        return '<button type="button" role="radio" data-design-set="' + d + '" aria-checked="' + on + '"' + (on ? ' class="is-on"' : '') + '>' + (d === 'dopamine' ? 'Дофаминовый' : 'Стандартный') + '</button>';
+      }).join('') +
       '</div>' +
       '</div>' +
 
@@ -52,6 +54,19 @@ window.Diary = window.Diary || {};
       '</div>' +
       '</div>';
   }
+
+  // Переключение дизайна: запоминаем выбор и перерисовываем текущую страницу
+  // на том же месте прокрутки.
+  document.addEventListener('click', function (ev) {
+    var b = ev.target.closest('[data-design-set]');
+    if (!b) return;
+    var d = b.getAttribute('data-design-set');
+    if (d === Diary.design.get()) return;
+    var y = window.scrollY;
+    Diary.design.set(d);
+    Diary.refresh();
+    window.scrollTo(0, y);
+  });
 
   function setup() { render(); }
 

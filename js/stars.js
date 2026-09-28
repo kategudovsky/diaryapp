@@ -8,8 +8,9 @@ window.Diary = window.Diary || {};
   var PATH = 'M12 2.5l2.6 6 6.4.6-4.8 4.3 1.4 6.3L12 16.4 6.4 19.7l1.4-6.3L3 9.1l6.4-.6z';
 
   function starSvg(filled, size) {
+    var std = Diary.design && Diary.design.isStandard();
     return '<svg viewBox="0 0 24 24" width="' + size + '" height="' + size + '" aria-hidden="true">' +
-      '<path d="' + PATH + '" fill="' + (filled ? '#FFE066' : 'none') + '" stroke="#1C1B3A" stroke-width="1.8" stroke-linejoin="round"/></svg>';
+      '<path d="' + PATH + '" fill="' + (filled ? (std ? '#23201C' : '#FFE066') : 'none') + '" stroke="' + (std ? '#23201C' : '#1C1B3A') + '" stroke-width="' + (std ? 1.4 : 1.8) + '" stroke-linejoin="round"/></svg>';
   }
 
   function slotFillPercent(rating, slotIndex) {

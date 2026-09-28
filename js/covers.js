@@ -182,7 +182,54 @@ Diary.covers = (() => {
 
   const cache = new Map();
 
+  // ---- Стандартный дизайн: лист тёплой бумаги со спокойным узором ----
+  // Узор — тонкие линии цвета текста в верхней части, внизу номер-разделитель
+  // и название заглавными. Узор, как и в ярком дизайне, выбирается по названию.
+  const S_INK = '#23201C';
+  const S_PAPER = '#FBF8F4';
+  const PATTERNS = [
+    // горизонтальные линии
+    () => Array.from({ length: 13 }, (_, i) => `<line x1="0" y1="${18 + i * 18}" x2="300" y2="${18 + i * 18}"/>`).join(''),
+    // сетка точек
+    () => { let s = ''; for (let y = 20; y < 250; y += 20) for (let x = 20; x < 300; x += 20) s += `<circle cx="${x}" cy="${y}" r="1.6" fill="${S_INK}" stroke="none"/>`; return s; },
+    // концентрические круги из угла
+    () => Array.from({ length: 12 }, (_, i) => `<circle cx="300" cy="0" r="${24 + i * 22}"/>`).join(''),
+    // диагональная штриховка
+    () => Array.from({ length: 30 }, (_, i) => `<line x1="${-260 + i * 20}" y1="260" x2="${i * 20}" y2="0"/>`).join(''),
+    // волны
+    () => Array.from({ length: 11 }, (_, i) => { const y = 22 + i * 21; return `<path d="M-10 ${y} q 25 -10 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0 t 50 0"/>`; }).join(''),
+    // ряд арок
+    () => { let s = ''; for (let r = 0; r < 3; r++) for (let c = 0; c < 4; c++) { const x = 18 + c * 70, y = 26 + r * 76; s += `<path d="M${x} ${y + 60} V${y + 26} a 26 26 0 0 1 52 0 V${y + 60}"/>`; } return s; },
+    // клетка из крестиков
+    () => { let s = ''; for (let y = 24; y < 250; y += 28) for (let x = 24; x < 300; x += 28) s += `<path d="M${x - 5} ${y}h10M${x} ${y - 5}v10"/>`; return s; },
+    // вложенные прямоугольники
+    () => Array.from({ length: 8 }, (_, i) => `<rect x="${20 + i * 14}" y="${18 + i * 12}" width="${260 - i * 28}" height="${220 - i * 24}" rx="${Math.max(2, 14 - i * 2)}"/>`).join(''),
+  ];
+
+  function coverStandard(item, text) {
+    const key = `std|${item.category}|${item.title}|${text}`;
+    if (cache.has(key)) return cache.get(key);
+    const h = hash(item.category + item.title);
+    const pattern = PATTERNS[h % PATTERNS.length]();
+    const num = String(h % 100).padStart(2, '0');
+    const lines = wrap(item.title, 13).map((l) => l.toUpperCase());
+    const y0 = 392 - (lines.length - 1) * 29;
+    const cut = y0 - 44;
+    const clip = 'p' + h.toString(36);
+    const t = text ? `<text x="26" y="${y0}" fill="${S_INK}" font-family="Onest, sans-serif" font-weight="400" font-size="25" letter-spacing="-0.3">${lines.map((l, i) => `<tspan x="26" dy="${i ? 29 : 0}">${esc(l)}</tspan>`).join('')}</text>` : '';
+    const svg = `<svg viewBox="0 0 300 420" xmlns="http://www.w3.org/2000/svg" preserveAspectRatio="xMidYMid slice" role="img" aria-label="${esc(item.title)}">` +
+      `<defs><clipPath id="${clip}"><rect x="0" y="0" width="300" height="${text ? cut - 16 : 420}"/></clipPath></defs>` +
+      `<rect width="300" height="420" fill="${S_PAPER}"/>` +
+      `<g clip-path="url(#${clip})" fill="none" stroke="${S_INK}" stroke-opacity=".22" stroke-width="1.2">${pattern}</g>` +
+      (text ? `<line x1="26" y1="${cut}" x2="274" y2="${cut}" stroke="${S_INK}" stroke-opacity=".3"/>` +
+        `<text x="274" y="${cut - 10}" text-anchor="end" fill="#8A8178" font-family="JetBrains Mono, monospace" font-size="14">${num}.</text>` : '') +
+      t + `</svg>`;
+    cache.set(key, svg);
+    return svg;
+  }
+
   function cover(item, { text = true } = {}) {
+    if (Diary.design && Diary.design.isStandard()) return coverStandard(item, text);
     const key = `${item.category}|${item.title}|${text}`;
     if (cache.has(key)) return cache.get(key);
     const h = hash(item.category + item.title);
