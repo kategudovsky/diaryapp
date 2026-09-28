@@ -1,0 +1,44 @@
+/* Прототип «Пастель, минимализм»: правила поверх css/styles.css.
+   Для справки, в проект не подключено. */
+
+/* ---- минимализм ---- */
+:root{--display:'Onest',system-ui,sans-serif;--shadow:rgba(0,0,0,.07);}
+body{background-image:none}
+body::after{display:none}
+.folder-figure,.title-deco,.stat-fig,.coll-figure,.empty > svg,.hand-note,.doodle{display:none!important}
+.sticker,.logo-word,.detail-cover,.decode span,.tag,.pack,.mini-cover,.stab{transform:none!important}
+.card:hover .cover,.card:nth-child(even):hover .cover,.pack:hover,.stat-tile:hover,.btn:hover,.chip:hover,.nav-pill:hover,.icon-btn:hover,.back:hover,.logo:hover .logo-word,.folder:hover .mini-cover,.side-tab:hover{transform:none!important}
+.stab{transform:translateY(4px)!important}.stab.is-active{transform:none!important}
+.btn,.nav-pill,.icon-btn,.search input,.field-inline input,.select select,.chip,.back,.close,.field input:not([type=radio]),.field textarea,.inline-form input,.status-pill,.picker,.note-card,.collection-remove,.round,.trash-count{border-width:1px!important}
+.btn{border-radius:10px;font-weight:600;box-shadow:none}
+.nav-pill,.back{border-radius:10px;font-weight:600}
+.search input,.field-inline input,.select select{border-radius:10px}
+.chip{border-radius:8px;font-weight:600}
+.cover{border:1px solid rgba(0,0,0,.1)!important;border-radius:12px!important}
+.detail-cover{border:1px solid rgba(0,0,0,.1)!important;border-radius:14px}
+.mini-cover{box-shadow:none;border-radius:8px}
+.folder{filter:drop-shadow(6px 0 12px rgba(0,0,0,.06))}
+.logo-word{font-family:var(--font)!important;font-weight:700!important;letter-spacing:-.04em!important;font-size:24px!important;color:var(--ink)!important}
+.title-sheet h1{font-size:72px!important;letter-spacing:-.045em!important;font-weight:700!important;color:var(--ink)!important;line-height:.95!important;margin-top:8px!important}
+.coll-hero h1{font-size:clamp(48px,6vw,88px)!important;letter-spacing:-.045em!important;font-weight:700!important;line-height:1!important}
+.folder-vtitle{font-weight:600!important;letter-spacing:-.035em!important}
+.pack-name,.detail-info h2,.add-head h2{font-weight:700!important;letter-spacing:-.035em!important}
+.decode{gap:0}
+.decode span{background:none!important;color:var(--ink-2)!important;padding:0 10px 0 0;font-weight:500}
+.decode b{font-weight:700;color:var(--ink)}
+.stat-tile{min-height:0;border-radius:14px}
+.stat-num{font-weight:600;letter-spacing:-.04em}
+.stat-top,.stat-bottom{font-weight:500}
+.sticker{font-weight:500;background:transparent!important;border:1px solid rgba(0,0,0,.14);color:var(--ink)!important}
+.status-pill{font-weight:600;background:rgba(255,255,255,.9)!important}
+.tag{font-weight:500}
+.note-card{font:500 15px/1.5 var(--font);background:#fff;padding:10px 14px}
+.quote-card::before{display:none}
+.quote-card{padding-left:18px;border-left:3px solid var(--ink);border-radius:0 12px 12px 0;font-style:normal}
+.empty p{font:600 22px var(--font);color:var(--ink)}
+.sheet{background-image:none!important}
+.mini-cover{outline:1px solid rgba(0,0,0,.08);outline-offset:-1px}
+
+/* ---- пастель ---- */
+:root{--tomato:#2B2A33;--ink-2:#75737E;}
+.btn{background:#2B2A33;color:#fff;border-color:#2B2A33}
