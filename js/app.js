@@ -85,11 +85,9 @@ window.Diary = window.Diary || {};
   }
 
   // ---- кнопка корзины в правом нижнем углу ----
-  // Счётчик удалённых записей. На компьютере кнопка живёт в правой полосе,
-  // куда не заходит ни контент, ни футер. На телефоне полосы нет, поэтому,
-  // когда прокрутка доходит до футера, кнопка встаёт над ним.
-  var FAB_GAP = 16;
-  var narrow = window.matchMedia('(max-width: 860px)');
+  // Счётчик удалённых записей. На компьютере кнопка живёт в правой полосе, куда
+  // не заходит контент. Над тёмным футером она становится белой; нижняя строка
+  // футера оставляет справа место под кнопку.
 
   function updateTrashFab() {
     var fab = document.getElementById('trashFab');
@@ -106,10 +104,12 @@ window.Diary = window.Diary || {};
 
   function positionTrashFab() {
     var fab = document.getElementById('trashFab');
-    var footer = document.getElementById('siteFooter');
-    if (!narrow.matches) { fab.style.bottom = ''; return; }
-    var top = footer.getBoundingClientRect().top;
-    fab.style.bottom = Math.max(FAB_GAP, window.innerHeight - top + FAB_GAP) + 'px';
+    var sheet = document.querySelector('#siteFooter .footer-sheet');
+    if (!sheet) return;
+    var r = fab.getBoundingClientRect();
+    var s = sheet.getBoundingClientRect();
+    var cy = r.top + r.height / 2;
+    fab.classList.toggle('is-on-footer', cy > s.top && r.left < s.right);
   }
 
   // ---- тост ----

@@ -709,7 +709,7 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
 .pack:hover { transform: translateY(-6px) rotate(-1deg); }
 .pack:nth-child(even):hover { transform: translateY(-6px) rotate(1deg); }
 .pack-tab {
-  position: absolute; bottom: calc(100% - 1px); left: var(--tab-left, 22px); right: var(--tab-right, auto);
+  position: absolute; bottom: calc(100% - 1px); left: var(--tab-left, 40px); right: var(--tab-right, auto);
   background: var(--tc);
   padding: 9px 16px 7px;
   border-radius: 14px 14px 0 0;
@@ -863,9 +863,13 @@ body[data-view="collection"] .mainnav a.is-active { background: var(--page-fi, v
   font: 800 11px/18px var(--font); text-align: center;
 }
 body.has-modal .trash-fab { display: none; }
+/* поверх тёмного футера кнопка белая */
+.trash-fab.is-on-footer { background: #FFFFFF; color: var(--ink); }
+.trash-fab.is-on-footer .trash-fab-count { border-color: #FFFFFF; }
+.trash-fab.is-on-footer.is-active { box-shadow: 0 0 0 3px var(--ink), 0 0 0 5px #FFFFFF; }
 
 /* ============ Футер: последний лист картотеки ============ */
-.site-footer { padding: 70px var(--lane) 0 var(--gutter); }
+.site-footer { padding: 70px var(--gutter) 0; }
 .footer-sheet {
   --tc: var(--ink);
   position: relative;
@@ -899,7 +903,7 @@ body.has-modal .trash-fab { display: none; }
 .design-switch button.is-on { background: var(--sun); color: var(--ink); }
 .design-switch button:disabled { cursor: default; color: rgba(255, 255, 255, .45); }
 .design-switch small { font: 500 10px var(--mono); text-transform: uppercase; letter-spacing: .06em; }
-.footer-bottom { display: flex; justify-content: space-between; gap: 16px; margin-top: 30px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .14); font: 500 12px var(--mono); color: rgba(255, 255, 255, .55); }
+.footer-bottom { padding-right: 64px; display: flex; justify-content: space-between; gap: 16px; margin-top: 30px; padding-top: 16px; border-top: 1px solid rgba(255, 255, 255, .14); font: 500 12px var(--mono); color: rgba(255, 255, 255, .55); }
 .footer-bottom a { color: inherit; }
 
 /* ============ Страница поиска ============ */
@@ -988,7 +992,7 @@ body.has-modal .trash-fab { display: none; }
   .pack-new { min-height: 110px; flex-direction: row; }
   .home-collections { padding: 10px var(--gutter) 30px; }
   .trash-fab { right: 12px; width: 46px; height: 46px; }
-  .site-footer { padding: 60px var(--gutter) 0; }
+  .site-footer { padding-top: 60px; }
   .footer-grid { grid-template-columns: 1fr; }
   .footer-sheet { padding: 30px 20px 18px; }
   .footer-tab { left: 20px; }
